@@ -2,7 +2,7 @@
 
 
 # Cek Tampilan Lama Bold
-![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/browser1_lama.jpg)
+![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/browser_lama.jpg)
 
 # Cek Tampilan Mod Webui
 ![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/browser1.jpg)
