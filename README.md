@@ -2,7 +2,7 @@
 
 
 
-# Cek Tampilan Lama Bold
+# Cek Tampilan Baypass Baterai Bold
 ![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/baypass.jpg)
 
 # Cek Tampilan Lama Bold
