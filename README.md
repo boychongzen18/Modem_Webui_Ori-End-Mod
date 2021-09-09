@@ -1,5 +1,9 @@
-# Modem e5372s Webui Mod
+# Modem e5372s Baypass Baterai & Webui Mod
 
+
+
+# Cek Tampilan Lama Bold
+![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/baypass.jpg)
 
 # Cek Tampilan Lama Bold
 ![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/browser_lama.jpg)
