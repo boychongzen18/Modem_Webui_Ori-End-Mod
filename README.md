@@ -1,6 +1,9 @@
 # Modem e5372s Baypass Baterai & Webui Mod
 
 
+# Cek Tampilan Lock 3G & 4G Modem e5372s
+![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/3G.jpg)
+![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/4G.jpg)
 
 # Cek Tampilan Baypass Baterai Bold
 ![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/baypass.jpg)
