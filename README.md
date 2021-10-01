@@ -14,6 +14,10 @@
 # Cek Tampilan Mod Webui
 ![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/browser1.jpg)
 
+# Modem Info STB OpenWRT
+![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/modem.jpg)
+![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/modem1.jpg)
+
 
 Youtube      : https://www.youtube.com/channel/UCKdOPQ_iIXcqK17PB_2RMdQ
 
