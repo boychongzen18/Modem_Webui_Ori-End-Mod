@@ -1,0 +1,19 @@
+
+Install Manual Modem Info
+
+Download luci-app-modeminfo_git-20.177.70260-242014a-1_all.ipk
+Letakkan di folder root
+
+buka Terminal & Install
+opkg install luci*.ipk
+
+
+
+
+Download semua folder modem info
+Copy paste isi di folder modem-mod ke folder openwrt sesuai letaknya
+Folder luasrc ada di usr/lib/lua/luci copy filenya
+
+Untuk folder cbi/modem copy filenya
+
+Folder etc & usr > sesuaikan folder masing2
