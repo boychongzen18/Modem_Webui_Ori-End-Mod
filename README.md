@@ -28,7 +28,7 @@
 Youtube      : https://www.youtube.com/channel/UCKdOPQ_iIXcqK17PB_2RMdQ
 
 
-Tutorial :
+Tutorial Orbit Star 2 Injeksi Via HP : https://youtu.be/EIfks1uhMB4
 
 
 My Website    : https://hackingforlive.wordpress.com
