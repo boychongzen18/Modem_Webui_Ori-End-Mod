@@ -28,6 +28,9 @@
 Youtube      : https://www.youtube.com/channel/UCKdOPQ_iIXcqK17PB_2RMdQ
 
 
+Tutorial Modem e5372s : https://youtu.be/-QYqzSpJ9kA
+
+
 Tutorial Orbit Star 2 Injeksi Via HP : https://youtu.be/EIfks1uhMB4
 
 
