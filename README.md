@@ -1,5 +1,6 @@
-# Modem e5372s Baypass Baterai & Webui Mod
+# Modem e5372s & Orbit Star 2
 
+# Modem e5372s Baypass Baterai & Webui Mod
 
 # Cek Tampilan Lock 3G & 4G Modem e5372s
 ![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/3G.jpg)
@@ -17,6 +18,11 @@
 # Modem Info STB OpenWRT
 ![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/modem.jpg)
 ![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/modem1.jpg)
+
+# Cek Tampilan Orbit Star 2 & Lock Band B3 (1800)
+![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/orbit.jpg)
+![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/lockband.jpg)
+
 
 
 Youtube      : https://www.youtube.com/channel/UCKdOPQ_iIXcqK17PB_2RMdQ
