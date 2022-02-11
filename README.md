@@ -22,7 +22,8 @@
 # Cek Tampilan Orbit Star 2 & Lock Band B3 (1800)
 ![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/orbit.jpg)
 ![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/lockband.jpg)
-
+# Cek Tampilan Orbit Star 2 & Lock Band B1+B3 (1800+2100)
+![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/orbit_star2.jpg)
 
 
 Youtube      : https://www.youtube.com/channel/UCKdOPQ_iIXcqK17PB_2RMdQ
