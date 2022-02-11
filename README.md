@@ -19,10 +19,9 @@
 ![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/modem.jpg)
 ![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/modem1.jpg)
 
-# Cek Tampilan Orbit Star 2 & Lock Band B3 (1800)
-![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/orbit.jpg)
+# Cek Tampilan Huawei Manager Orbit Star 2 & Lock Band B1 (1800)
 ![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/lockband.jpg)
-# Cek Tampilan Orbit Star 2 & Lock Band B1+B3 (1800+2100)
+# Cek Tampilan Webui Orbit Star 2 & Lock Band B1+B3 (1800+2100)
 ![be](https://raw.githubusercontent.com/boychongzen18/e5372s_Webui_Mod/main/orbit_star2.jpg)
 
 
