@@ -1,0 +1,3053 @@
+javascript: ftb();
+
+var isLongID=false;
+var mainband=null;
+var _2ndrun=null;
+var havename = false;
+var suspend=0;
+var status="";
+var netmode="";
+var signal="";
+var nroption="";
+var arfcn="";
+console.log("type: netmode , signal , status"),
+window.setInterval(Main, 300);
+
+function Main() {
+1 != suspend && ($("#dhcp_mask").show(),$("#dhcp_dns").show(),$('#apn_list_input_dns_operate').show(),$('#network_preferred_mode_control_father').show(),$('#network_5g_control_father').show(),$('#network_4g_control_father').show(),$('#network_3g_control_father').show(),$('#dialup_network_mode_control_father').show(),$('#network_band_control_father').show(),$('#LTE_band_control_father').show(),$('#LTE_band').show(),$('#mobilesearchBtnSave').show(),$('#mobilesearch_input_support_5G_switch_operate').show(),$('#mobilesearch_network_mode_5G').show(),$('#mobilesearch_btn_save_div').show(),$('#mobilesearch_input_support_4G_switch_operate').show(),$('#mobilesearch_LTE_band_select').show(),$('#mobilesearch_LTE_band_list_items').show(),$('#mobilesearch_network_notes').show(),$('#mobilesearch_input_support_3G_switch_operate').show(),$('#apn_connection_mode').show(),$('#eths-manual-mac').show(),$('#secondary_dns').show(),$('#wanspeed').show(),$('#dualntwk_ipv4').show(),$('#dualntwk_ipv6').show(),$('#dia_trace_maxhops_father').show(),$('#led_switch_content').show(),$('#ip_type').show(),$('#antenna_page').show(),$('#wifi_save_power_wrapper').show(),$('#wifi_save_power').show(),$('#wifiadv_atuoApti_div').show(),$('#LAN_LAN_Ping').show(),$('#statistics_daily_flow_switch').show(),$('#wifiadv_2g_mode_div').show(),$('#wifiadv_2g_maxassociate_div').show(),$('#wifiadv_5g_mode_div').show(),$('#wifiadv_5g_maxassociate_div').show(),$('#developer_mode_div').show(),$('#mlog').show(),$('#calltrace').show(),$('#band').show(),$('#apklog').show());
+getNetmode(), getStatus(), getInfo(), Signl(), ReadHardBand(), B_4GType(), PlmnPh(), DeviceBoot();
+}
+
+function arfcntoband(arfcn) {
+if (arfcn > 422000 && arfcn < 434000) return '1';
+if (arfcn > 386000 && arfcn < 398000) return '2';
+if (arfcn > 361000 && arfcn < 376000) return '3';
+if (arfcn > 173800 && arfcn < 178800) return '5';
+if (arfcn > 524000 && arfcn < 538000) return '7';
+if (arfcn > 185000 && arfcn < 192000) return '8';
+if (arfcn > 145800 && arfcn < 149200) return '12';
+if (arfcn > 149200 && arfcn < 151200) return '13';
+if (arfcn > 151600 && arfcn < 153600) return '14';
+if (arfcn > 172000 && arfcn < 175000) return '18';
+if (arfcn > 158200 && arfcn < 164200) return '20';
+if (arfcn > 305000 && arfcn < 311800) return '24';
+if (arfcn > 386000 && arfcn < 399000) return '25';
+if (arfcn > 171800 && arfcn < 178800) return '26';
+if (arfcn > 151600 && arfcn < 160600) return '28';
+if (arfcn > 143400 && arfcn < 145600) return '29';
+if (arfcn > 470000 && arfcn < 472000) return '30';
+if (arfcn > 402000 && arfcn < 405000) return '34';
+if (arfcn > 514000 && arfcn < 524000) return '38';
+if (arfcn > 376000 && arfcn < 384000) return '39';
+if (arfcn > 460000 && arfcn < 480000) return '40';
+if (arfcn > 499200 && arfcn < 537999) return '41';
+if (arfcn > 743334 && arfcn < 795000) return '46';
+if (arfcn > 790334 && arfcn < 795000) return '47';
+if (arfcn > 636667 && arfcn < 646666) return '48';
+if (arfcn > 286400 && arfcn < 303400) return '50';
+if (arfcn > 285400 && arfcn < 286400) return '51';
+if (arfcn > 496700 && arfcn < 499000) return '53';
+if (arfcn > 334000 && arfcn < 335000) return '54';
+if (arfcn > 422000 && arfcn < 440000) return '65';
+if (arfcn > 422000 && arfcn < 440000) return '66';
+if (arfcn > 147600 && arfcn < 151600) return '67';
+if (arfcn > 399000 && arfcn < 404000) return '70';
+if (arfcn > 123400 && arfcn < 130400) return '71';
+if (arfcn > 295000 && arfcn < 303600) return '74';
+if (arfcn > 286400 && arfcn < 303400) return '75';
+if (arfcn > 285400 && arfcn < 286400) return '76';
+if (arfcn > 620000 && arfcn < 680000) return '77';
+if (arfcn > 620000 && arfcn < 653333) return '78';
+if (arfcn > 693334 && arfcn < 733333) return '79';
+}
+
+function PlmnPh() {
+$.ajax({dataType: "text",type: "GET",async: !0,url: '/api/net/current-plmn', success:function(data) {
+var xml = data,xmlDoc = $.parseXML(xml),$xml = $(xmlDoc);
+if ($xml.find('FullName').text() == "") {
+$("#brand").html("No Service").css('color', 'red')
+} else {
+$("#brand").css('color', 'yellow');
+$('#brand').html($xml.find('FullName').text());
+}
+if ($xml.find('Numeric').text() == "") {
+$(".nu").css('display', 'none');
+} else {
+$(".nu").css('display', '');
+$('#numer').html($xml.find('Numeric').text());
+}
+if ($xml.find('Numeric').text() == "41201") {$('#name').html('Afghanistan');
+} else if ($xml.find('Numeric').text() == "41250") {$('#name').html('Afghanistan');
+} else if ($xml.find('Numeric').text() == "41240") {$('#name').html('Afghanistan');
+} else if ($xml.find('Numeric').text() == "41220") {$('#name').html('Afghanistan');
+} else if ($xml.find('Numeric').text() == "41280") {$('#name').html('Afghanistan');
+} else if ($xml.find('Numeric').text() == "41255") {$('#name').html('Afghanistan');
+} else if ($xml.find('Numeric').text() == "27603") {$('#name').html('Albania');
+} else if ($xml.find('Numeric').text() == "27601") {$('#name').html('Albania');
+} else if ($xml.find('Numeric').text() == "27602") {$('#name').html('Albania');
+} else if ($xml.find('Numeric').text() == "60302") {$('#name').html('Algeria');
+} else if ($xml.find('Numeric').text() == "60301") {$('#name').html('Algeria');
+} else if ($xml.find('Numeric').text() == "60309") {$('#name').html('Algeria');
+} else if ($xml.find('Numeric').text() == "60303") {$('#name').html('Algeria');
+} else if ($xml.find('Numeric').text() == "54411") {$('#name').html('American Samoa');
+} else if ($xml.find('Numeric').text() == "21303") {$('#name').html('Andorra');
+} else if ($xml.find('Numeric').text() == "63104") {$('#name').html('Angola');
+} else if ($xml.find('Numeric').text() == "63102") {$('#name').html('Angola');
+} else if ($xml.find('Numeric').text() == "365010") {$('#name').html('Anguilla');
+} else if ($xml.find('Numeric').text() == "365840") {$('#name').html('Anguilla');
+} else if ($xml.find('Numeric').text() == "344030") {$('#name').html('Antigua and Barbuda');
+} else if ($xml.find('Numeric').text() == "344050") {$('#name').html('Antigua and Barbuda');
+} else if ($xml.find('Numeric').text() == "344920") {$('#name').html('Antigua and Barbuda');
+} else if ($xml.find('Numeric').text() == "722310") {$('#name').html('Argentina');
+} else if ($xml.find('Numeric').text() == "722010") {$('#name').html('Argentina');
+} else if ($xml.find('Numeric').text() == "722020") {$('#name').html('Argentina');
+} else if ($xml.find('Numeric').text() == "722034") {$('#name').html('Argentina');
+} else if ($xml.find('Numeric').text() == "28301") {$('#name').html('Armenia');
+} else if ($xml.find('Numeric').text() == "28304") {$('#name').html('Armenia');
+} else if ($xml.find('Numeric').text() == "28310") {$('#name').html('Armenia');
+} else if ($xml.find('Numeric').text() == "28305") {$('#name').html('Armenia');
+} else if ($xml.find('Numeric').text() == "36302") {$('#name').html('Aruba');
+} else if ($xml.find('Numeric').text() == "36301") {$('#name').html('Aruba');
+} else if ($xml.find('Numeric').text() == "50506") {$('#name').html('Australia');
+} else if ($xml.find('Numeric').text() == "50514") {$('#name').html('Australia');
+} else if ($xml.find('Numeric').text() == "50524") {$('#name').html('Australia');
+} else if ($xml.find('Numeric').text() == "50504") {$('#name').html('Australia');
+} else if ($xml.find('Numeric').text() == "50510") {$('#name').html('Australia');
+} else if ($xml.find('Numeric').text() == "50508") {$('#name').html('Australia');
+} else if ($xml.find('Numeric').text() == "50536") {$('#name').html('Australia');
+} else if ($xml.find('Numeric').text() == "50521") {$('#name').html('Australia');
+} else if ($xml.find('Numeric').text() == "50501") {$('#name').html('Australia');
+} else if ($xml.find('Numeric').text() == "50538") {$('#name').html('Australia');
+} else if ($xml.find('Numeric').text() == "50502") {$('#name').html('Australia');
+} else if ($xml.find('Numeric').text() == "50503") {$('#name').html('Australia');
+} else if ($xml.find('Numeric').text() == "23205") {$('#name').html('Alnamsa');
+} else if ($xml.find('Numeric').text() == "23201") {$('#name').html('Alnamsa');
+} else if ($xml.find('Numeric').text() == "23211") {$('#name').html('Alnamsa');
+} else if ($xml.find('Numeric').text() == "23208") {$('#name').html('Alnamsa');
+} else if ($xml.find('Numeric').text() == "23206") {$('#name').html('Alnamsa');
+} else if ($xml.find('Numeric').text() == "23203") {$('#name').html('Alnamsa');
+} else if ($xml.find('Numeric').text() == "23207") {$('#name').html('Alnamsa');
+} else if ($xml.find('Numeric').text() == "23215") {$('#name').html('Alnamsa');
+} else if ($xml.find('Numeric').text() == "23212") {$('#name').html('Alnamsa');
+} else if ($xml.find('Numeric').text() == "40001") {$('#name').html('Azerbaijan');
+} else if ($xml.find('Numeric').text() == "40002") {$('#name').html('Azerbaijan');
+} else if ($xml.find('Numeric').text() == "40004") {$('#name').html('Azerbaijan');
+} else if ($xml.find('Numeric').text() == "40006") {$('#name').html('Azerbaijan');
+} else if ($xml.find('Numeric').text() == "36449") {$('#name').html('Bahamas');
+} else if ($xml.find('Numeric').text() == "36439") {$('#name').html('Bahamas');
+} else if ($xml.find('Numeric').text() == "42601") {$('#name').html('Bahrain');
+} else if ($xml.find('Numeric').text() == "42604") {$('#name').html('Bahrain');
+} else if ($xml.find('Numeric').text() == "42602") {$('#name').html('Bahrain');
+} else if ($xml.find('Numeric').text() == "47007") {$('#name').html('Bangladesh');
+} else if ($xml.find('Numeric').text() == "47003") {$('#name').html('Bangladesh');
+} else if ($xml.find('Numeric').text() == "47010") {$('#name').html('Bangladesh');
+} else if ($xml.find('Numeric').text() == "47001") {$('#name').html('Bangladesh');
+} else if ($xml.find('Numeric').text() == "47009") {$('#name').html('Bangladesh');
+} else if ($xml.find('Numeric').text() == "47002") {$('#name').html('Bangladesh');
+} else if ($xml.find('Numeric').text() == "47004") {$('#name').html('Bangladesh');
+} else if ($xml.find('Numeric').text() == "342750") {$('#name').html('Barbados');
+} else if ($xml.find('Numeric').text() == "342600") {$('#name').html('Barbados');
+} else if ($xml.find('Numeric').text() == "342800") {$('#name').html('Barbados');
+} else if ($xml.find('Numeric').text() == "25701") {$('#name').html('Belarus');
+} else if ($xml.find('Numeric').text() == "25706") {$('#name').html('Belarus');
+} else if ($xml.find('Numeric').text() == "25704") {$('#name').html('Belarus');
+} else if ($xml.find('Numeric').text() == "25702") {$('#name').html('Belarus');
+} else if ($xml.find('Numeric').text() == "20620") {$('#name').html('Belgium');
+} else if ($xml.find('Numeric').text() == "20606") {$('#name').html('Belgium');
+} else if ($xml.find('Numeric').text() == "20630") {$('#name').html('Belgium');
+} else if ($xml.find('Numeric').text() == "20610") {$('#name').html('Belgium');
+} else if ($xml.find('Numeric').text() == "20601") {$('#name').html('Belgium');
+} else if ($xml.find('Numeric').text() == "20605") {$('#name').html('Belgium');
+} else if ($xml.find('Numeric').text() == "70267") {$('#name').html('Belize');
+} else if ($xml.find('Numeric').text() == "70269") {$('#name').html('Belize');
+} else if ($xml.find('Numeric').text() == "61601") {$('#name').html('Benin');
+} else if ($xml.find('Numeric').text() == "61605") {$('#name').html('Benin');
+} else if ($xml.find('Numeric').text() == "61602") {$('#name').html('Benin');
+} else if ($xml.find('Numeric').text() == "61603") {$('#name').html('Benin');
+} else if ($xml.find('Numeric').text() == "35000") {$('#name').html('Bermuda');
+} else if ($xml.find('Numeric').text() == "338050") {$('#name').html('Bermuda');
+} else if ($xml.find('Numeric').text() == "40211") {$('#name').html('Bhutan');
+} else if ($xml.find('Numeric').text() == "40177") {$('#name').html('Bhutan');
+} else if ($xml.find('Numeric').text() == "73602") {$('#name').html('Bolivia');
+} else if ($xml.find('Numeric').text() == "73603") {$('#name').html('Bolivia');
+} else if ($xml.find('Numeric').text() == "73601") {$('#name').html('Bolivia');
+} else if ($xml.find('Numeric').text() == "21890") {$('#name').html('Bosnia-and-herzegovina');
+} else if ($xml.find('Numeric').text() == "21803") {$('#name').html('Bosnia-and-herzegovina');
+} else if ($xml.find('Numeric').text() == "21805") {$('#name').html('Bosnia-and-herzegovina');
+} else if ($xml.find('Numeric').text() == "65204") {$('#name').html('Botswana');
+} else if ($xml.find('Numeric').text() == "65201") {$('#name').html('Botswana');
+} else if ($xml.find('Numeric').text() == "65202") {$('#name').html('Botswana');
+} else if ($xml.find('Numeric').text() == "72432") {$('#name').html('Brazil');
+} else if ($xml.find('Numeric').text() == "72424") {$('#name').html('Brazil');
+} else if ($xml.find('Numeric').text() == "72416") {$('#name').html('Brazil');
+} else if ($xml.find('Numeric').text() == "72405") {$('#name').html('Brazil');
+} else if ($xml.find('Numeric').text() == "72417") {$('#name').html('Brazil');
+} else if ($xml.find('Numeric').text() == "72418") {$('#name').html('Brazil');
+} else if ($xml.find('Numeric').text() == "72400") {$('#name').html('Brazil');
+} else if ($xml.find('Numeric').text() == "72430") {$('#name').html('Brazil');
+} else if ($xml.find('Numeric').text() == "72415") {$('#name').html('Brazil');
+} else if ($xml.find('Numeric').text() == "72402") {$('#name').html('Brazil');
+} else if ($xml.find('Numeric').text() == "72406") {$('#name').html('Brazil');
+} else if ($xml.find('Numeric').text() == "348570") {$('#name').html('British-virgin-islands');
+} else if ($xml.find('Numeric').text() == "348770") {$('#name').html('British-virgin-islands');
+} else if ($xml.find('Numeric').text() == "348170") {$('#name').html('British-virgin-islands');
+} else if ($xml.find('Numeric').text() == "52811") {$('#name').html('Brunei');
+} else if ($xml.find('Numeric').text() == "52802") {$('#name').html('Brunei');
+} else if ($xml.find('Numeric').text() == "52801") {$('#name').html('Brunei');
+} else if ($xml.find('Numeric').text() == "28401") {$('#name').html('Bulgaria');
+} else if ($xml.find('Numeric').text() == "28411") {$('#name').html('Bulgaria');
+} else if ($xml.find('Numeric').text() == "28413") {$('#name').html('Bulgaria');
+} else if ($xml.find('Numeric').text() == "28405") {$('#name').html('Bulgaria');
+} else if ($xml.find('Numeric').text() == "28403") {$('#name').html('Bulgaria');
+} else if ($xml.find('Numeric').text() == "61301") {$('#name').html('Burkina-faso');
+} else if ($xml.find('Numeric').text() == "61302") {$('#name').html('Burkina-faso');
+} else if ($xml.find('Numeric').text() == "61303") {$('#name').html('Burkina-faso');
+} else if ($xml.find('Numeric').text() == "64201") {$('#name').html('Burundi');
+} else if ($xml.find('Numeric').text() == "64208") {$('#name').html('Burundi');
+} else if ($xml.find('Numeric').text() == "64203") {$('#name').html('Burundi');
+} else if ($xml.find('Numeric').text() == "64207") {$('#name').html('Burundi');
+} else if ($xml.find('Numeric').text() == "45601") {$('#name').html('Cambodia');
+} else if ($xml.find('Numeric').text() == "45608") {$('#name').html('Cambodia');
+} else if ($xml.find('Numeric').text() == "45603") {$('#name').html('Cambodia');
+} else if ($xml.find('Numeric').text() == "45611") {$('#name').html('Cambodia');
+} else if ($xml.find('Numeric').text() == "45602") {$('#name').html('Cambodia');
+} else if ($xml.find('Numeric').text() == "62401") {$('#name').html('Cameroon');
+} else if ($xml.find('Numeric').text() == "62404") {$('#name').html('Cameroon');
+} else if ($xml.find('Numeric').text() == "62402") {$('#name').html('Cameroon');
+} else if ($xml.find('Numeric').text() == "302290") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302610") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302270") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302370") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302490") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302710") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302620") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302380") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302220") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302660") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302320") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302680") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302650") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302220") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302500") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302610") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "302130") {$('#name').html('Canada');
+} else if ($xml.find('Numeric').text() == "62501") {$('#name').html('Cape-verde');
+} else if ($xml.find('Numeric').text() == "62502") {$('#name').html('Cape-verde');
+} else if ($xml.find('Numeric').text() == "346050") {$('#name').html('Cayman-islands');
+} else if ($xml.find('Numeric').text() == "346140") {$('#name').html('Cayman-islands');
+} else if ($xml.find('Numeric').text() == "62304") {$('#name').html('Central-african-republic');
+} else if ($xml.find('Numeric').text() == "62301") {$('#name').html('Central-african-republic');
+} else if ($xml.find('Numeric').text() == "62303") {$('#name').html('Central-african-republic');
+} else if ($xml.find('Numeric').text() == "62302") {$('#name').html('Central-african-republic');
+} else if ($xml.find('Numeric').text() == "66201") {$('#name').html('Chad');
+} else if ($xml.find('Numeric').text() == "66207") {$('#name').html('Chad');
+} else if ($xml.find('Numeric').text() == "66203") {$('#name').html('Chad');
+} else if ($xml.find('Numeric').text() == "73003") {$('#name').html('Chile');
+} else if ($xml.find('Numeric').text() == "73001") {$('#name').html('Chile');
+} else if ($xml.find('Numeric').text() == "73019") {$('#name').html('Chile');
+} else if ($xml.find('Numeric').text() == "73002") {$('#name').html('Chile');
+} else if ($xml.find('Numeric').text() == "73004") {$('#name').html('Chile');
+} else if ($xml.find('Numeric').text() == "73006") {$('#name').html('Chile');
+} else if ($xml.find('Numeric').text() == "73013") {$('#name').html('Chile');
+} else if ($xml.find('Numeric').text() == "73008") {$('#name').html('Chile');
+} else if ($xml.find('Numeric').text() == "73004") {$('#name').html('Chile');
+} else if ($xml.find('Numeric').text() == "46000") {$('#name').html('China');
+} else if ($xml.find('Numeric').text() == "46003") {$('#name').html('China');
+} else if ($xml.find('Numeric').text() == "46020") {$('#name').html('China');
+} else if ($xml.find('Numeric').text() == "46001") {$('#name').html('China');
+} else if ($xml.find('Numeric').text() == "732130") {$('#name').html('Colombia');
+} else if ($xml.find('Numeric').text() == "732101") {$('#name').html('Colombia');
+} else if ($xml.find('Numeric').text() == "732101") {$('#name').html('Colombia');
+} else if ($xml.find('Numeric').text() == "732176") {$('#name').html('Colombia');
+} else if ($xml.find('Numeric').text() == "732002") {$('#name').html('Colombia');
+} else if ($xml.find('Numeric').text() == "732187") {$('#name').html('Colombia');
+} else if ($xml.find('Numeric').text() == "732101") {$('#name').html('Colombia');
+} else if ($xml.find('Numeric').text() == "732020") {$('#name').html('Colombia');
+} else if ($xml.find('Numeric').text() == "732154") {$('#name').html('Colombia');
+} else if ($xml.find('Numeric').text() == "65401") {$('#name').html('Comoros');
+} else if ($xml.find('Numeric').text() == "65402") {$('#name').html('Comoros');
+} else if ($xml.find('Numeric').text() == "54801") {$('#name').html('Cook-islands');
+} else if ($xml.find('Numeric').text() == "71203") {$('#name').html('Costa-rica');
+} else if ($xml.find('Numeric').text() == "71220") {$('#name').html('Costa-rica');
+} else if ($xml.find('Numeric').text() == "71201") {$('#name').html('Costa-rica');
+} else if ($xml.find('Numeric').text() == "71204") {$('#name').html('Costa-rica');
+} else if ($xml.find('Numeric').text() == "21910") {$('#name').html('Croatia');
+} else if ($xml.find('Numeric').text() == "21912") {$('#name').html('Croatia');
+} else if ($xml.find('Numeric').text() == "21902") {$('#name').html('Croatia');
+} else if ($xml.find('Numeric').text() == "21901") {$('#name').html('Croatia');
+} else if ($xml.find('Numeric').text() == "36801") {$('#name').html('Cuba');
+} else if ($xml.find('Numeric').text() == "28001") {$('#name').html('Cyprus');
+} else if ($xml.find('Numeric').text() == "28010") {$('#name').html('Cyprus');
+} else if ($xml.find('Numeric').text() == "28022") {$('#name').html('Cyprus');
+} else if ($xml.find('Numeric').text() == "28020") {$('#name').html('Cyprus');
+} else if ($xml.find('Numeric').text() == "23004") {$('#name').html('Czech-republic');
+} else if ($xml.find('Numeric').text() == "23002") {$('#name').html('Czech-republic');
+} else if ($xml.find('Numeric').text() == "23098") {$('#name').html('Czech-republic');
+} else if ($xml.find('Numeric').text() == "23001") {$('#name').html('Czech-republic');
+} else if ($xml.find('Numeric').text() == "23003") {$('#name').html('Czech-republic');
+} else if ($xml.find('Numeric').text() == "63090") {$('#name').html('Democratic-republic-of-congo');
+} else if ($xml.find('Numeric').text() == "63002") {$('#name').html('Democratic-republic-of-congo');
+} else if ($xml.find('Numeric').text() == "63086") {$('#name').html('Democratic-republic-of-congo');
+} else if ($xml.find('Numeric').text() == "63001") {$('#name').html('Democratic-republic-of-congo');
+} else if ($xml.find('Numeric').text() == "23806") {$('#name').html('Denmark');
+} else if ($xml.find('Numeric').text() == "23812") {$('#name').html('Denmark');
+} else if ($xml.find('Numeric').text() == "23801") {$('#name').html('Denmark');
+} else if ($xml.find('Numeric').text() == "23802") {$('#name').html('Denmark');
+} else if ($xml.find('Numeric').text() == "23820") {$('#name').html('Denmark');
+} else if ($xml.find('Numeric').text() == "23807") {$('#name').html('Denmark');
+} else if ($xml.find('Numeric').text() == "63801") {$('#name').html('Djibouti');
+} else if ($xml.find('Numeric').text() == "366020") {$('#name').html('Dominica');
+} else if ($xml.find('Numeric').text() == "366110") {$('#name').html('Dominica');
+} else if ($xml.find('Numeric').text() == "37001") {$('#name').html('Dominican-republic');
+} else if ($xml.find('Numeric').text() == "37002") {$('#name').html('Dominican-republic');
+} else if ($xml.find('Numeric').text() == "37004") {$('#name').html('Dominican-republic');
+} else if ($xml.find('Numeric').text() == "37005") {$('#name').html('Dominican-republic');
+} else if ($xml.find('Numeric').text() == "51403") {$('#name').html('East-timor');
+} else if ($xml.find('Numeric').text() == "51401") {$('#name').html('East-timor');
+} else if ($xml.find('Numeric').text() == "51402") {$('#name').html('East-timor');
+} else if ($xml.find('Numeric').text() == "74001") {$('#name').html('Ecuador');
+} else if ($xml.find('Numeric').text() == "74002") {$('#name').html('Ecuador');
+} else if ($xml.find('Numeric').text() == "74000") {$('#name').html('Ecuador');
+} else if ($xml.find('Numeric').text() == "74003") {$('#name').html('Ecuador');
+} else if ($xml.find('Numeric').text() == "60203") {$('#name').html('Egypt');
+} else if ($xml.find('Numeric').text() == "60201") {$('#name').html('Egypt');
+} else if ($xml.find('Numeric').text() == "60202") {$('#name').html('Egypt');
+} else if ($xml.find('Numeric').text() == "60204") {$('#name').html('Egypt');
+} else if ($xml.find('Numeric').text() == "70601") {$('#name').html('El-salvador');
+} else if ($xml.find('Numeric').text() == "70602") {$('#name').html('El-salvador');
+} else if ($xml.find('Numeric').text() == "70604") {$('#name').html('El-salvador');
+} else if ($xml.find('Numeric').text() == "70603") {$('#name').html('El-salvador');
+} else if ($xml.find('Numeric').text() == "62703") {$('#name').html('Equatorial-guinea');
+} else if ($xml.find('Numeric').text() == "62701") {$('#name').html('Equatorial-guinea');
+} else if ($xml.find('Numeric').text() == "65701") {$('#name').html('Eritrea');
+} else if ($xml.find('Numeric').text() == "24802") {$('#name').html('Estonia');
+} else if ($xml.find('Numeric').text() == "24803") {$('#name').html('Estonia');
+} else if ($xml.find('Numeric').text() == "24801") {$('#name').html('Estonia');
+} else if ($xml.find('Numeric').text() == "63601") {$('#name').html('Ethiopia');
+} else if ($xml.find('Numeric').text() == "28801") {$('#name').html('Faroe-islands');
+} else if ($xml.find('Numeric').text() == "28802") {$('#name').html('Faroe-islands');
+} else if ($xml.find('Numeric').text() == "54202") {$('#name').html('Fiji');
+} else if ($xml.find('Numeric').text() == "54203") {$('#name').html('Fiji');
+} else if ($xml.find('Numeric').text() == "54201") {$('#name').html('Fiji');
+} else if ($xml.find('Numeric').text() == "24414") {$('#name').html('Finland');
+} else if ($xml.find('Numeric').text() == "24403") {$('#name').html('Finland');
+} else if ($xml.find('Numeric').text() == "24405") {$('#name').html('Finland');
+} else if ($xml.find('Numeric').text() == "24420") {$('#name').html('Finland');
+} else if ($xml.find('Numeric').text() == "24435") {$('#name').html('Finland');
+} else if ($xml.find('Numeric').text() == "24433") {$('#name').html('Finland');
+} else if ($xml.find('Numeric').text() == "20820") {$('#name').html('France');
+} else if ($xml.find('Numeric').text() == "20815") {$('#name').html('France');
+} else if ($xml.find('Numeric').text() == "20805") {$('#name').html('France');
+} else if ($xml.find('Numeric').text() == "20810") {$('#name').html('France');
+} else if ($xml.find('Numeric').text() == "20826") {$('#name').html('France');
+} else if ($xml.find('Numeric').text() == "20801") {$('#name').html('France');
+} else if ($xml.find('Numeric').text() == "20808") {$('#name').html('France');
+} else if ($xml.find('Numeric').text() == "20822") {$('#name').html('France');
+} else if ($xml.find('Numeric').text() == "20810") {$('#name').html('France');
+} else if ($xml.find('Numeric').text() == "54720") {$('#name').html('French-polynesia');
+} else if ($xml.find('Numeric').text() == "54705") {$('#name').html('French-polynesia');
+} else if ($xml.find('Numeric').text() == "54715") {$('#name').html('French-polynesia');
+} else if ($xml.find('Numeric').text() == "62803") {$('#name').html('Gabon');
+} else if ($xml.find('Numeric').text() == "62804") {$('#name').html('Gabon');
+} else if ($xml.find('Numeric').text() == "62801") {$('#name').html('Gabon');
+} else if ($xml.find('Numeric').text() == "62802") {$('#name').html('Gabon');
+} else if ($xml.find('Numeric').text() == "60702") {$('#name').html('Gambia');
+} else if ($xml.find('Numeric').text() == "60703") {$('#name').html('Gambia');
+} else if ($xml.find('Numeric').text() == "60701") {$('#name').html('Gambia');
+} else if ($xml.find('Numeric').text() == "60706") {$('#name').html('Gambia');
+} else if ($xml.find('Numeric').text() == "60704") {$('#name').html('Gambia');
+} else if ($xml.find('Numeric').text() == "28204") {$('#name').html('Georgia');
+} else if ($xml.find('Numeric').text() == "28201") {$('#name').html('Georgia');
+} else if ($xml.find('Numeric').text() == "28202") {$('#name').html('Georgia');
+} else if ($xml.find('Numeric').text() == "28205") {$('#name').html('Georgia');
+} else if ($xml.find('Numeric').text() == "26215") {$('#name').html('Germany');
+} else if ($xml.find('Numeric').text() == "26213") {$('#name').html('Germany');
+} else if ($xml.find('Numeric').text() == "26212") {$('#name').html('Germany');
+} else if ($xml.find('Numeric').text() == "26243") {$('#name').html('Germany');
+} else if ($xml.find('Numeric').text() == "26292") {$('#name').html('Germany');
+} else if ($xml.find('Numeric').text() == "26203") {$('#name').html('Germany');
+} else if ($xml.find('Numeric').text() == "26233") {$('#name').html('Germany');
+} else if ($xml.find('Numeric').text() == "26201") {$('#name').html('Germany');
+} else if ($xml.find('Numeric').text() == "26202") {$('#name').html('Germany');
+} else if ($xml.find('Numeric').text() == "62003") {$('#name').html('Ghana');
+} else if ($xml.find('Numeric').text() == "62010") {$('#name').html('Ghana');
+} else if ($xml.find('Numeric').text() == "62007") {$('#name').html('Ghana');
+} else if ($xml.find('Numeric').text() == "62001") {$('#name').html('Ghana');
+} else if ($xml.find('Numeric').text() == "62008") {$('#name').html('Ghana');
+} else if ($xml.find('Numeric').text() == "62002") {$('#name').html('Ghana');
+} else if ($xml.find('Numeric').text() == "26601") {$('#name').html('Gibraltar');
+} else if ($xml.find('Numeric').text() == "20201") {$('#name').html('Ghana');
+} else if ($xml.find('Numeric').text() == "20214") {$('#name').html('Ghana');
+} else if ($xml.find('Numeric').text() == "20205") {$('#name').html('Ghana');
+} else if ($xml.find('Numeric').text() == "20209") {$('#name').html('Greece');
+} else if ($xml.find('Numeric').text() == "29002") {$('#name').html('Greenland');
+} else if ($xml.find('Numeric').text() == "29001") {$('#name').html('Greenland');
+} else if ($xml.find('Numeric').text() == "352030") {$('#name').html('Grenada');
+} else if ($xml.find('Numeric').text() == "352110") {$('#name').html('Grenada');
+} else if ($xml.find('Numeric').text() == "34020") {$('#name').html('Guadeloupe');
+} else if ($xml.find('Numeric').text() == "34001") {$('#name').html('Guadeloupe');
+} else if ($xml.find('Numeric').text() == "310140") {$('#name').html('Guam');
+} else if ($xml.find('Numeric').text() == "310400") {$('#name').html('Guam');
+} else if ($xml.find('Numeric').text() == "310032") {$('#name').html('Guam');
+} else if ($xml.find('Numeric').text() == "310370") {$('#name').html('Guam');
+} else if ($xml.find('Numeric').text() == "70401") {$('#name').html('Guatemala');
+} else if ($xml.find('Numeric').text() == "70403") {$('#name').html('Guatemala');
+} else if ($xml.find('Numeric').text() == "70402") {$('#name').html('Guatemala');
+} else if ($xml.find('Numeric').text() == "73801") {$('#name').html('Guiana');
+} else if ($xml.find('Numeric').text() == "738002") {$('#name').html('Guiana');
+} else if ($xml.find('Numeric').text() == "61105") {$('#name').html('Guinea');
+} else if ($xml.find('Numeric').text() == "61104") {$('#name').html('Guinea');
+} else if ($xml.find('Numeric').text() == "61101") {$('#name').html('Guinea');
+} else if ($xml.find('Numeric').text() == "61103") {$('#name').html('Guinea');
+} else if ($xml.find('Numeric').text() == "63202") {$('#name').html('Guinea-bissau');
+} else if ($xml.find('Numeric').text() == "63203") {$('#name').html('Guinea-bissau');
+} else if ($xml.find('Numeric').text() == "37202") {$('#name').html('Haiti');
+} else if ($xml.find('Numeric').text() == "37203") {$('#name').html('Haiti');
+} else if ($xml.find('Numeric').text() == "708001") {$('#name').html('Honduras');
+} else if ($xml.find('Numeric').text() == "708040") {$('#name').html('Honduras');
+} else if ($xml.find('Numeric').text() == "708030") {$('#name').html('Honduras');
+} else if ($xml.find('Numeric').text() == "708002") {$('#name').html('Honduras');
+} else if ($xml.find('Numeric').text() == "45403") {$('#name').html('Hong-kong');
+} else if ($xml.find('Numeric').text() == "45412") {$('#name').html('Hong-kong');
+} else if ($xml.find('Numeric').text() == "45407") {$('#name').html('Hong-kong');
+} else if ($xml.find('Numeric').text() == "45411") {$('#name').html('Hong-kong');
+} else if ($xml.find('Numeric').text() == "45401") {$('#name').html('Hong-kong');
+} else if ($xml.find('Numeric').text() == "45400") {$('#name').html('Hong-kong');
+} else if ($xml.find('Numeric').text() == "45414") {$('#name').html('Hong-kong');
+} else if ($xml.find('Numeric').text() == "45416") {$('#name').html('Hong-kong');
+} else if ($xml.find('Numeric').text() == "45415") {$('#name').html('Hong-kong');
+} else if ($xml.find('Numeric').text() == "21602") {$('#name').html('Hungary');
+} else if ($xml.find('Numeric').text() == "21630") {$('#name').html('Hungary');
+} else if ($xml.find('Numeric').text() == "21601") {$('#name').html('Hungary');
+} else if ($xml.find('Numeric').text() == "21670") {$('#name').html('Hungary');
+} else if ($xml.find('Numeric').text() == "27411") {$('#name').html('Iceland');
+} else if ($xml.find('Numeric').text() == "27408") {$('#name').html('Iceland');
+} else if ($xml.find('Numeric').text() == "27401") {$('#name').html('Iceland');
+} else if ($xml.find('Numeric').text() == "27402") {$('#name').html('Iceland');
+} else if ($xml.find('Numeric').text() == "40417") {$('#name').html('India');
+} else if ($xml.find('Numeric').text() == "40406") {$('#name').html('India');
+} else if ($xml.find('Numeric').text() == "40421") {$('#name').html('India');
+} else if ($xml.find('Numeric').text() == "40434") {$('#name').html('India');
+} else if ($xml.find('Numeric').text() == "40404") {$('#name').html('India');
+} else if ($xml.find('Numeric').text() == "405840") {$('#name').html('India');
+} else if ($xml.find('Numeric').text() == "40409") {$('#name').html('India');
+} else if ($xml.find('Numeric').text() == "405025") {$('#name').html('India');
+} else if ($xml.find('Numeric').text() == "40401") {$('#name').html('India');
+} else if ($xml.find('Numeric').text() == "51089") {$('#name').html('Indonesia');
+} else if ($xml.find('Numeric').text() == "51008") {$('#name').html('Indonesia');
+} else if ($xml.find('Numeric').text() == "51088") {$('#name').html('Indonesia');
+} else if ($xml.find('Numeric').text() == "51001") {$('#name').html('Indonesia');
+} else if ($xml.find('Numeric').text() == "51000") {$('#name').html('Indonesia');
+} else if ($xml.find('Numeric').text() == "51009") {$('#name').html('Indonesia');
+} else if ($xml.find('Numeric').text() == "51007") {$('#name').html('Indonesia');
+} else if ($xml.find('Numeric').text() == "51010") {$('#name').html('Indonesia');
+} else if ($xml.find('Numeric').text() == "51011") {$('#name').html('Indonesia');
+} else if ($xml.find('Numeric').text() == "43211") {$('#name').html('Iran');
+} else if ($xml.find('Numeric').text() == "43212") {$('#name').html('Iran');
+} else if ($xml.find('Numeric').text() == "43235") {$('#name').html('Iran');
+} else if ($xml.find('Numeric').text() == "43220") {$('#name').html('Iran');
+} else if ($xml.find('Numeric').text() == "43232") {$('#name').html('Iran');
+} else if ($xml.find('Numeric').text() == "43270") {$('#name').html('Iran');
+} else if ($xml.find('Numeric').text() == "41800") {$('#name').html('Iraq');
+} else if ($xml.find('Numeric').text() == "41840") {$('#name').html('Iraq');
+} else if ($xml.find('Numeric').text() == "41845") {$('#name').html('Iraq');
+} else if ($xml.find('Numeric').text() == "41892") {$('#name').html('Iraq');
+} else if ($xml.find('Numeric').text() == "41820") {$('#name').html('Iraq');
+} else if ($xml.find('Numeric').text() == "27202") {$('#name').html('Ireland');
+} else if ($xml.find('Numeric').text() == "27203") {$('#name').html('Ireland');
+} else if ($xml.find('Numeric').text() == "27213") {$('#name').html('Ireland');
+} else if ($xml.find('Numeric').text() == "27203") {$('#name').html('Ireland');
+} else if ($xml.find('Numeric').text() == "27202") {$('#name').html('Ireland');
+} else if ($xml.find('Numeric').text() == "27211") {$('#name').html('Ireland');
+} else if ($xml.find('Numeric').text() == "27201") {$('#name').html('Ireland');
+} else if ($xml.find('Numeric').text() == "42509") {$('#name').html('Israel');
+} else if ($xml.find('Numeric').text() == "42502") {$('#name').html('Israel');
+} else if ($xml.find('Numeric').text() == "42508") {$('#name').html('Israel');
+} else if ($xml.find('Numeric').text() == "42507") {$('#name').html('Israel');
+} else if ($xml.find('Numeric').text() == "42501") {$('#name').html('Israel');
+} else if ($xml.find('Numeric').text() == "42503") {$('#name').html('Israel');
+} else if ($xml.find('Numeric').text() == "42516") {$('#name').html('Israel');
+} else if ($xml.find('Numeric').text() == "22237") {$('#name').html('Italy');
+} else if ($xml.find('Numeric').text() == "22250") {$('#name').html('Italy');
+} else if ($xml.find('Numeric').text() == "22201") {$('#name').html('Italy');
+} else if ($xml.find('Numeric').text() == "22206") {$('#name').html('Italy');
+} else if ($xml.find('Numeric').text() == "22288") {$('#name').html('Italy');
+} else if ($xml.find('Numeric').text() == "61202") {$('#name').html('Ivory-coast');
+} else if ($xml.find('Numeric').text() == "61205") {$('#name').html('Ivory-coast');
+} else if ($xml.find('Numeric').text() == "61203") {$('#name').html('Ivory-coast');
+} else if ($xml.find('Numeric').text() == "338040") {$('#name').html('Jamaica');
+} else if ($xml.find('Numeric').text() == "338050") {$('#name').html('Jamaica');
+} else if ($xml.find('Numeric').text() == "338020") {$('#name').html('Jamaica');
+} else if ($xml.find('Numeric').text() == "44000") {$('#name').html('Japan');
+} else if ($xml.find('Numeric').text() == "44050") {$('#name').html('Japan');
+} else if ($xml.find('Numeric').text() == "44010") {$('#name').html('Japan');
+} else if ($xml.find('Numeric').text() == "44020") {$('#name').html('Japan');
+} else if ($xml.find('Numeric').text() == "41677") {$('#name').html('Jordan');
+} else if ($xml.find('Numeric').text() == "41603") {$('#name').html('Jordan');
+} else if ($xml.find('Numeric').text() == "41601") {$('#name').html('Jordan');
+} else if ($xml.find('Numeric').text() == "40107") {$('#name').html('Kazakhstan');
+} else if ($xml.find('Numeric').text() == "40101") {$('#name').html('Kazakhstan');
+} else if ($xml.find('Numeric').text() == "40108") {$('#name').html('Kazakhstan');
+} else if ($xml.find('Numeric').text() == "40102") {$('#name').html('Kazakhstan');
+} else if ($xml.find('Numeric').text() == "40177") {$('#name').html('Kazakhstan');
+} else if ($xml.find('Numeric').text() == "63903") {$('#name').html('Kenya');
+} else if ($xml.find('Numeric').text() == "63910") {$('#name').html('Kenya');
+} else if ($xml.find('Numeric').text() == "63901") {$('#name').html('Kenya');
+} else if ($xml.find('Numeric').text() == "63907") {$('#name').html('Kenya');
+} else if ($xml.find('Numeric').text() == "54501") {$('#name').html('Kiribati');
+} else if ($xml.find('Numeric').text() == "41903") {$('#name').html('Kuwait');
+} else if ($xml.find('Numeric').text() == "41904") {$('#name').html('Kuwait');
+} else if ($xml.find('Numeric').text() == "41902") {$('#name').html('Kuwait');
+} else if ($xml.find('Numeric').text() == "43701") {$('#name').html('Kyrgyzstan');
+} else if ($xml.find('Numeric').text() == "43705") {$('#name').html('Kyrgyzstan');
+} else if ($xml.find('Numeric').text() == "43709") {$('#name').html('Kyrgyzstan');
+} else if ($xml.find('Numeric').text() == "45708") {$('#name').html('Laos');
+} else if ($xml.find('Numeric').text() == "45702") {$('#name').html('Laos');
+} else if ($xml.find('Numeric').text() == "45701") {$('#name').html('Laos');
+} else if ($xml.find('Numeric').text() == "45703") {$('#name').html('Laos');
+} else if ($xml.find('Numeric').text() == "24705") {$('#name').html('Latvia');
+} else if ($xml.find('Numeric').text() == "24701") {$('#name').html('Latvia');
+} else if ($xml.find('Numeric').text() == "24706") {$('#name').html('Latvia');
+} else if ($xml.find('Numeric').text() == "24702") {$('#name').html('Latvia');
+} else if ($xml.find('Numeric').text() == "24703") {$('#name').html('Latvia');
+} else if ($xml.find('Numeric').text() == "41501") {$('#name').html('Lebanon');
+} else if ($xml.find('Numeric').text() == "41505") {$('#name').html('Lebanon');
+} else if ($xml.find('Numeric').text() == "41503") {$('#name').html('Lebanon');
+} else if ($xml.find('Numeric').text() == "65102") {$('#name').html('Lesotho');
+} else if ($xml.find('Numeric').text() == "65101") {$('#name').html('Lesotho');
+} else if ($xml.find('Numeric').text() == "61820") {$('#name').html('Liberia');
+} else if ($xml.find('Numeric').text() == "61801") {$('#name').html('Liberia');
+} else if ($xml.find('Numeric').text() == "61804") {$('#name').html('Liberia');
+} else if ($xml.find('Numeric').text() == "61807") {$('#name').html('Liberia');
+} else if ($xml.find('Numeric').text() == "60601") {$('#name').html('Libya');
+} else if ($xml.find('Numeric').text() == "60602") {$('#name').html('Libya');
+} else if ($xml.find('Numeric').text() == "60606") {$('#name').html('Libya');
+} else if ($xml.find('Numeric').text() == "60600") {$('#name').html('Libya');
+} else if ($xml.find('Numeric').text() == "29502") {$('#name').html('Liechtenstein');
+} else if ($xml.find('Numeric').text() == "29506") {$('#name').html('Liechtenstein');
+} else if ($xml.find('Numeric').text() == "29505") {$('#name').html('Liechtenstein');
+} else if ($xml.find('Numeric').text() == "29501") {$('#name').html('Liechtenstein');
+} else if ($xml.find('Numeric').text() == "24602") {$('#name').html('Lithuania');
+} else if ($xml.find('Numeric').text() == "24606") {$('#name').html('Lithuania');
+} else if ($xml.find('Numeric').text() == "24603") {$('#name').html('Lithuania');
+} else if ($xml.find('Numeric').text() == "24601") {$('#name').html('Lithuania');
+} else if ($xml.find('Numeric').text() == "27099") {$('#name').html('Luxembourg');
+} else if ($xml.find('Numeric').text() == "27001") {$('#name').html('Luxembourg');
+} else if ($xml.find('Numeric').text() == "27077") {$('#name').html('Luxembourg');
+} else if ($xml.find('Numeric').text() == "45503") {$('#name').html('Macao');
+} else if ($xml.find('Numeric').text() == "45507") {$('#name').html('Macao');
+} else if ($xml.find('Numeric').text() == "45504") {$('#name').html('Macao');
+} else if ($xml.find('Numeric').text() == "45506") {$('#name').html('Macao');
+} else if ($xml.find('Numeric').text() == "29404") {$('#name').html('Macedonia');
+} else if ($xml.find('Numeric').text() == "29401") {$('#name').html('Macedonia');
+} else if ($xml.find('Numeric').text() == "29402") {$('#name').html('Macedonia');
+} else if ($xml.find('Numeric').text() == "64601") {$('#name').html('Madagascar');
+} else if ($xml.find('Numeric').text() == "64602") {$('#name').html('Madagascar');
+} else if ($xml.find('Numeric').text() == "64604") {$('#name').html('Madagascar');
+} else if ($xml.find('Numeric').text() == "65002") {$('#name').html('Malawi');
+} else if ($xml.find('Numeric').text() == "65010") {$('#name').html('Malawi');
+} else if ($xml.find('Numeric').text() == "65001") {$('#name').html('Malawi');
+} else if ($xml.find('Numeric').text() == "50213") {$('#name').html('Malaysia');
+} else if ($xml.find('Numeric').text() == "50216") {$('#name').html('Malaysia');
+} else if ($xml.find('Numeric').text() == "50220") {$('#name').html('Malaysia');
+} else if ($xml.find('Numeric').text() == "50212") {$('#name').html('Malaysia');
+} else if ($xml.find('Numeric').text() == "502153") {$('#name').html('Malaysia');
+} else if ($xml.find('Numeric').text() == "50201") {$('#name').html('Malaysia');
+} else if ($xml.find('Numeric').text() == "502150") {$('#name').html('Malaysia');
+} else if ($xml.find('Numeric').text() == "50218") {$('#name').html('Malaysia');
+} else if ($xml.find('Numeric').text() == "502152") {$('#name').html('Malaysia');
+} else if ($xml.find('Numeric').text() == "47201") {$('#name').html('Maldives');
+} else if ($xml.find('Numeric').text() == "47202") {$('#name').html('Maldives');
+} else if ($xml.find('Numeric').text() == "61002") {$('#name').html('Mali');
+} else if ($xml.find('Numeric').text() == "61001") {$('#name').html('Mali');
+} else if ($xml.find('Numeric').text() == "27821") {$('#name').html('Malta');
+} else if ($xml.find('Numeric').text() == "27877") {$('#name').html('Malta');
+} else if ($xml.find('Numeric').text() == "27801") {$('#name').html('Malta');
+} else if ($xml.find('Numeric').text() == "60902") {$('#name').html('Mauretania');
+} else if ($xml.find('Numeric').text() == "60901") {$('#name').html('Mauretania');
+} else if ($xml.find('Numeric').text() == "60910") {$('#name').html('Mauretania');
+} else if ($xml.find('Numeric').text() == "61703") {$('#name').html('Mauritius');
+} else if ($xml.find('Numeric').text() == "61710") {$('#name').html('Mauritius');
+} else if ($xml.find('Numeric').text() == "61701") {$('#name').html('Mauritius');
+} else if ($xml.find('Numeric').text() == "334140") {$('#name').html('Mexico');
+} else if ($xml.find('Numeric').text() == "334010") {$('#name').html('Mexico');
+} else if ($xml.find('Numeric').text() == "334030") {$('#name').html('Mexico');
+} else if ($xml.find('Numeric').text() == "334020") {$('#name').html('Mexico');
+} else if ($xml.find('Numeric').text() == "334150") {$('#name').html('Mexico');
+} else if ($xml.find('Numeric').text() == "334040") {$('#name').html('Mexico');
+} else if ($xml.find('Numeric').text() == "55001") {$('#name').html('Micronesia');
+} else if ($xml.find('Numeric').text() == "25900") {$('#name').html('Moldova');
+} else if ($xml.find('Numeric').text() == "25902") {$('#name').html('Moldova');
+} else if ($xml.find('Numeric').text() == "25901") {$('#name').html('Moldova');
+} else if ($xml.find('Numeric').text() == "25903") {$('#name').html('Moldova');
+} else if ($xml.find('Numeric').text() == "21210") {$('#name').html('Monaco');
+} else if ($xml.find('Numeric').text() == "42898") {$('#name').html('Mongolia');
+} else if ($xml.find('Numeric').text() == "42899") {$('#name').html('Mongolia');
+} else if ($xml.find('Numeric').text() == "42891") {$('#name').html('Mongolia');
+} else if ($xml.find('Numeric').text() == "42888") {$('#name').html('Mongolia');
+} else if ($xml.find('Numeric').text() == "29703") {$('#name').html('Montenegro');
+} else if ($xml.find('Numeric').text() == "29702") {$('#name').html('Montenegro');
+} else if ($xml.find('Numeric').text() == "29701") {$('#name').html('Montenegro');
+} else if ($xml.find('Numeric').text() == "60402") {$('#name').html('Morocco');
+} else if ($xml.find('Numeric').text() == "60406") {$('#name').html('Morocco');
+} else if ($xml.find('Numeric').text() == "60400") {$('#name').html('Morocco');
+} else if ($xml.find('Numeric').text() == "64301") {$('#name').html('Mozambique');
+} else if ($xml.find('Numeric').text() == "64303") {$('#name').html('Mozambique');
+} else if ($xml.find('Numeric').text() == "64304") {$('#name').html('Mozambique');
+} else if ($xml.find('Numeric').text() == "41400") {$('#name').html('Myanmar');
+} else if ($xml.find('Numeric').text() == "41409") {$('#name').html('Myanmar');
+} else if ($xml.find('Numeric').text() == "41405") {$('#name').html('Myanmar');
+} else if ($xml.find('Numeric').text() == "41406") {$('#name').html('Myanmar');
+} else if ($xml.find('Numeric').text() == "64901") {$('#name').html('Namibia');
+} else if ($xml.find('Numeric').text() == "64903") {$('#name').html('Namibia');
+} else if ($xml.find('Numeric').text() == "53602") {$('#name').html('Nauru');
+} else if ($xml.find('Numeric').text() == "42902") {$('#name').html('Nepal');
+} else if ($xml.find('Numeric').text() == "42901") {$('#name').html('Nepal');
+} else if ($xml.find('Numeric').text() == "42904") {$('#name').html('Nepal');
+} else if ($xml.find('Numeric').text() == "42903") {$('#name').html('Nepal');
+} else if ($xml.find('Numeric').text() == "20408") {$('#name').html('Netherlands');
+} else if ($xml.find('Numeric').text() == "20409") {$('#name').html('Netherlands');
+} else if ($xml.find('Numeric').text() == "20416") {$('#name').html('Netherlands');
+} else if ($xml.find('Numeric').text() == "20402") {$('#name').html('Netherlands');
+} else if ($xml.find('Numeric').text() == "20412") {$('#name').html('Netherlands');
+} else if ($xml.find('Numeric').text() == "20406") {$('#name').html('Netherlands');
+} else if ($xml.find('Numeric').text() == "20404") {$('#name').html('Netherlands');
+} else if ($xml.find('Numeric').text() == "20415") {$('#name').html('Netherlands');
+} else if ($xml.find('Numeric').text() == "36268") {$('#name').html('Netherlands-antilles');
+} else if ($xml.find('Numeric').text() == "36251") {$('#name').html('Netherlands-antilles');
+} else if ($xml.find('Numeric').text() == "36259") {$('#name').html('Netherlands-antilles');
+} else if ($xml.find('Numeric').text() == "54601") {$('#name').html('New-caledonia');
+} else if ($xml.find('Numeric').text() == "53024") {$('#name').html('New-zealand');
+} else if ($xml.find('Numeric').text() == "53005") {$('#name').html('New-zealand');
+} else if ($xml.find('Numeric').text() == "53001") {$('#name').html('New-zealand');
+} else if ($xml.find('Numeric').text() == "71021") {$('#name').html('Nicaragua');
+} else if ($xml.find('Numeric').text() == "71030") {$('#name').html('Nicaragua');
+} else if ($xml.find('Numeric').text() == "61402") {$('#name').html('Niger');
+} else if ($xml.find('Numeric').text() == "61403") {$('#name').html('Niger');
+} else if ($xml.find('Numeric').text() == "61404") {$('#name').html('Niger');
+} else if ($xml.find('Numeric').text() == "61401") {$('#name').html('Niger');
+} else if ($xml.find('Numeric').text() == "62160") {$('#name').html('Nigeria');
+} else if ($xml.find('Numeric').text() == "62120") {$('#name').html('Nigeria');
+} else if ($xml.find('Numeric').text() == "62150") {$('#name').html('Nigeria');
+} else if ($xml.find('Numeric').text() == "62122") {$('#name').html('Nigeria');
+} else if ($xml.find('Numeric').text() == "62130") {$('#name').html('Nigeria');
+} else if ($xml.find('Numeric').text() == "62140") {$('#name').html('Nigeria');
+} else if ($xml.find('Numeric').text() == "62127") {$('#name').html('Nigeria');
+} else if ($xml.find('Numeric').text() == "62124") {$('#name').html('Nigeria');
+} else if ($xml.find('Numeric').text() == "62126") {$('#name').html('Nigeria');
+} else if ($xml.find('Numeric').text() == "55501") {$('#name').html('Niue');
+} else if ($xml.find('Numeric').text() == "46705") {$('#name').html('North-korea');
+} else if ($xml.find('Numeric').text() == "24206") {$('#name').html('Norway');
+} else if ($xml.find('Numeric').text() == "24223") {$('#name').html('Norway');
+} else if ($xml.find('Numeric').text() == "24208") {$('#name').html('Norway');
+} else if ($xml.find('Numeric').text() == "24204") {$('#name').html('Norway');
+} else if ($xml.find('Numeric').text() == "24201") {$('#name').html('Norway');
+} else if ($xml.find('Numeric').text() == "24202") {$('#name').html('Norway');
+} else if ($xml.find('Numeric').text() == "42202") {$('#name').html('Oman');
+} else if ($xml.find('Numeric').text() == "42203") {$('#name').html('Oman');
+} else if ($xml.find('Numeric').text() == "42204") {$('#name').html('Oman');
+} else if ($xml.find('Numeric').text() == "41002") {$('#name').html('Pakistan');
+} else if ($xml.find('Numeric').text() == "41001") {$('#name').html('Pakistan');
+} else if ($xml.find('Numeric').text() == "41005") {$('#name').html('Pakistan');
+} else if ($xml.find('Numeric').text() == "41006") {$('#name').html('Pakistan');
+} else if ($xml.find('Numeric').text() == "41003") {$('#name').html('Pakistan');
+} else if ($xml.find('Numeric').text() == "41004") {$('#name').html('Pakistan');
+} else if ($xml.find('Numeric').text() == "55101") {$('#name').html('Palau');
+} else if ($xml.find('Numeric').text() == "42505") {$('#name').html('Palestine');
+} else if ($xml.find('Numeric').text() == "42506") {$('#name').html('Palestine');
+} else if ($xml.find('Numeric').text() == "71403") {$('#name').html('Panama');
+} else if ($xml.find('Numeric').text() == "71404") {$('#name').html('Panama');
+} else if ($xml.find('Numeric').text() == "71401") {$('#name').html('Panama');
+} else if ($xml.find('Numeric').text() == "71402") {$('#name').html('Panama');
+} else if ($xml.find('Numeric').text() == "53701") {$('#name').html('Papua-new-guinea');
+} else if ($xml.find('Numeric').text() == "53703") {$('#name').html('Papua-new-guinea');
+} else if ($xml.find('Numeric').text() == "53702") {$('#name').html('Papua-new-guinea');
+} else if ($xml.find('Numeric').text() == "74402") {$('#name').html('Paraguay');
+} else if ($xml.find('Numeric').text() == "74406") {$('#name').html('Paraguay');
+} else if ($xml.find('Numeric').text() == "74405") {$('#name').html('Paraguay');
+} else if ($xml.find('Numeric').text() == "74404") {$('#name').html('Paraguay');
+} else if ($xml.find('Numeric').text() == "74401") {$('#name').html('Paraguay');
+} else if ($xml.find('Numeric').text() == "71615") {$('#name').html('Peru');
+} else if ($xml.find('Numeric').text() == "71610") {$('#name').html('Peru');
+} else if ($xml.find('Numeric').text() == "71607") {$('#name').html('Peru');
+} else if ($xml.find('Numeric').text() == "71606") {$('#name').html('Peru');
+} else if ($xml.find('Numeric').text() == "51502") {$('#name').html('Philippines');
+} else if ($xml.find('Numeric').text() == "51503") {$('#name').html('Philippines');
+} else if ($xml.find('Numeric').text() == "51505") {$('#name').html('Philippines');
+} else if ($xml.find('Numeric').text() == "51566") {$('#name').html('Philippines');
+} else if ($xml.find('Numeric').text() == "26004") {$('#name').html('Poland');
+} else if ($xml.find('Numeric').text() == "26012") {$('#name').html('Poland');
+} else if ($xml.find('Numeric').text() == "26015") {$('#name').html('Poland');
+} else if ($xml.find('Numeric').text() == "26009") {$('#name').html('Poland');
+} else if ($xml.find('Numeric').text() == "26011") {$('#name').html('Poland');
+} else if ($xml.find('Numeric').text() == "26003") {$('#name').html('Poland');
+} else if ($xml.find('Numeric').text() == "26006") {$('#name').html('Poland');
+} else if ($xml.find('Numeric').text() == "26001") {$('#name').html('Poland');
+} else if ($xml.find('Numeric').text() == "26013") {$('#name').html('Poland');
+} else if ($xml.find('Numeric').text() == "26002") {$('#name').html('Poland');
+} else if ($xml.find('Numeric').text() == "26804") {$('#name').html('Portugal');
+} else if ($xml.find('Numeric').text() == "26802") {$('#name').html('Portugal');
+} else if ($xml.find('Numeric').text() == "26803") {$('#name').html('Portugal');
+} else if ($xml.find('Numeric').text() == "26801") {$('#name').html('Portugal');
+} else if ($xml.find('Numeric').text() == "330110") {$('#name').html('Puerto-rico');
+} else if ($xml.find('Numeric').text() == "330000") {$('#name').html('Puerto-rico');
+} else if ($xml.find('Numeric').text() == "42701") {$('#name').html('Qatar');
+} else if ($xml.find('Numeric').text() == "42702") {$('#name').html('Qatar');
+} else if ($xml.find('Numeric').text() == "62901") {$('#name').html('Republic-of-congo');
+} else if ($xml.find('Numeric').text() == "62910") {$('#name').html('Republic-of-congo');
+} else if ($xml.find('Numeric').text() == "62907") {$('#name').html('Republic-of-congo');
+} else if ($xml.find('Numeric').text() == "64702") {$('#name').html('Reunion');
+} else if ($xml.find('Numeric').text() == "64700") {$('#name').html('Reunion');
+} else if ($xml.find('Numeric').text() == "64710") {$('#name').html('Reunion');
+} else if ($xml.find('Numeric').text() == "22605") {$('#name').html('Romania');
+} else if ($xml.find('Numeric').text() == "22615") {$('#name').html('Romania');
+} else if ($xml.find('Numeric').text() == "22616") {$('#name').html('Romania');
+} else if ($xml.find('Numeric').text() == "22610") {$('#name').html('Romania');
+} else if ($xml.find('Numeric').text() == "22603") {$('#name').html('Romania');
+} else if ($xml.find('Numeric').text() == "22601") {$('#name').html('Romania');
+} else if ($xml.find('Numeric').text() == "25028") {$('#name').html('Russia');
+} else if ($xml.find('Numeric').text() == "25002") {$('#name').html('Russia');
+} else if ($xml.find('Numeric').text() == "25035") {$('#name').html('Russia');
+} else if ($xml.find('Numeric').text() == "25001") {$('#name').html('Russia');
+} else if ($xml.find('Numeric').text() == "25039") {$('#name').html('Russia');
+} else if ($xml.find('Numeric').text() == "25006") {$('#name').html('Russia');
+} else if ($xml.find('Numeric').text() == "25054") {$('#name').html('Russia');
+} else if ($xml.find('Numeric').text() == "25020") {$('#name').html('Russia');
+} else if ($xml.find('Numeric').text() == "25008") {$('#name').html('Russia');
+} else if ($xml.find('Numeric').text() == "25011") {$('#name').html('Russia');
+} else if ($xml.find('Numeric').text() == "63514") {$('#name').html('Rwanda');
+} else if ($xml.find('Numeric').text() == "63510") {$('#name').html('Rwanda');
+} else if ($xml.find('Numeric').text() == "63513") {$('#name').html('Rwanda');
+} else if ($xml.find('Numeric').text() == "356050") {$('#name').html('Saint-kitts-and-nevis');
+} else if ($xml.find('Numeric').text() == "356110") {$('#name').html('Saint-kitts-and-nevis');
+} else if ($xml.find('Numeric').text() == "358050") {$('#name').html('Saint-lucia');
+} else if ($xml.find('Numeric').text() == "358110") {$('#name').html('Saint-lucia');
+} else if ($xml.find('Numeric').text() == "360050") {$('#name').html('Saint-vincent-and-the-grenadines');
+} else if ($xml.find('Numeric').text() == "360110") {$('#name').html('Saint-vincent-and-the-grenadines');
+} else if ($xml.find('Numeric').text() == "30801") {$('#name').html('Saint-pierre-and-miquelon');
+} else if ($xml.find('Numeric').text() == "54927") {$('#name').html('Samoa');
+} else if ($xml.find('Numeric').text() == "54900") {$('#name').html('Samoa');
+} else if ($xml.find('Numeric').text() == "29201") {$('#name').html('San-marino');
+} else if ($xml.find('Numeric').text() == "62601") {$('#name').html('Sao-tome-and-principe');
+} else if ($xml.find('Numeric').text() == "62602") {$('#name').html('Sao-tome-and-principe');
+} else if ($xml.find('Numeric').text() == "42003") {$('#name').html('Kingdom Saudi Arabia');
+} else if ($xml.find('Numeric').text() == "42001") {$('#name').html('Kingdom Saudi Arabia');
+} else if ($xml.find('Numeric').text() == "42005") {$('#name').html('Kingdom Saudi Arabia');
+} else if ($xml.find('Numeric').text() == "42004") {$('#name').html('Kingdom Saudi Arabia');
+} else if ($xml.find('Numeric').text() == "60803") {$('#name').html('Senegal');
+} else if ($xml.find('Numeric').text() == "60801") {$('#name').html('Senegal');
+} else if ($xml.find('Numeric').text() == "60802") {$('#name').html('Senegal');
+} else if ($xml.find('Numeric').text() == "22011") {$('#name').html('Serbia');
+} else if ($xml.find('Numeric').text() == "22003") {$('#name').html('Serbia');
+} else if ($xml.find('Numeric').text() == "22007") {$('#name').html('Serbia');
+} else if ($xml.find('Numeric').text() == "22001") {$('#name').html('Serbia');
+} else if ($xml.find('Numeric').text() == "22005") {$('#name').html('Serbia');
+} else if ($xml.find('Numeric').text() == "63310") {$('#name').html('Seychelles');
+} else if ($xml.find('Numeric').text() == "63301") {$('#name').html('Seychelles');
+} else if ($xml.find('Numeric').text() == "61902") {$('#name').html('Sierra-leone');
+} else if ($xml.find('Numeric').text() == "61901") {$('#name').html('Sierra-leone');
+} else if ($xml.find('Numeric').text() == "61906") {$('#name').html('Sierra-leone');
+} else if ($xml.find('Numeric').text() == "52503") {$('#name').html('Singapore');
+} else if ($xml.find('Numeric').text() == "52501") {$('#name').html('Singapore');
+} else if ($xml.find('Numeric').text() == "52505") {$('#name').html('Singapore');
+} else if ($xml.find('Numeric').text() == "23103") {$('#name').html('Slovakia');
+} else if ($xml.find('Numeric').text() == "23106") {$('#name').html('Slovakia');
+} else if ($xml.find('Numeric').text() == "23101") {$('#name').html('Slovakia');
+} else if ($xml.find('Numeric').text() == "23102") {$('#name').html('Slovakia');
+} else if ($xml.find('Numeric').text() == "29340") {$('#name').html('Slovenia');
+} else if ($xml.find('Numeric').text() == "29364") {$('#name').html('Slovenia');
+} else if ($xml.find('Numeric').text() == "29341") {$('#name').html('Slovenia');
+} else if ($xml.find('Numeric').text() == "29370") {$('#name').html('Slovenia');
+} else if ($xml.find('Numeric').text() == "54002") {$('#name').html('Solomon-islands');
+} else if ($xml.find('Numeric').text() == "54001") {$('#name').html('Solomon-islands');
+} else if ($xml.find('Numeric').text() == "63730") {$('#name').html('Somalia');
+} else if ($xml.find('Numeric').text() == "63750") {$('#name').html('Somalia');
+} else if ($xml.find('Numeric').text() == "63710") {$('#name').html('Somalia');
+} else if ($xml.find('Numeric').text() == "63704") {$('#name').html('Somalia');
+} else if ($xml.find('Numeric').text() == "63720") {$('#name').html('Somalia');
+} else if ($xml.find('Numeric').text() == "63771") {$('#name').html('Somalia');
+} else if ($xml.find('Numeric').text() == "63701") {$('#name').html('Somalia');
+} else if ($xml.find('Numeric').text() == "65507") {$('#name').html('South-africa');
+} else if ($xml.find('Numeric').text() == "65510") {$('#name').html('South-africa');
+} else if ($xml.find('Numeric').text() == "65513") {$('#name').html('South-africa');
+} else if ($xml.find('Numeric').text() == "65502") {$('#name').html('South-africa');
+} else if ($xml.find('Numeric').text() == "65501") {$('#name').html('South-africa');
+} else if ($xml.find('Numeric').text() == "45002") {$('#name').html('South-korea');
+} else if ($xml.find('Numeric').text() == "45006") {$('#name').html('South-korea');
+} else if ($xml.find('Numeric').text() == "45005") {$('#name').html('South-korea');
+} else if ($xml.find('Numeric').text() == "21423") {$('#name').html('Spain');
+} else if ($xml.find('Numeric').text() == "21422") {$('#name').html('Spain');
+} else if ($xml.find('Numeric').text() == "21408") {$('#name').html('Spain');
+} else if ($xml.find('Numeric').text() == "21425") {$('#name').html('Spain');
+} else if ($xml.find('Numeric').text() == "21407") {$('#name').html('Spain');
+} else if ($xml.find('Numeric').text() == "21403") {$('#name').html('Spain');
+} else if ($xml.find('Numeric').text() == "21419") {$('#name').html('Spain');
+} else if ($xml.find('Numeric').text() == "21416") {$('#name').html('Spain');
+} else if ($xml.find('Numeric').text() == "21401") {$('#name').html('Spain');
+} else if ($xml.find('Numeric').text() == "21404") {$('#name').html('Spain');
+} else if ($xml.find('Numeric').text() == "41305") {$('#name').html('Sri-lanka');
+} else if ($xml.find('Numeric').text() == "41302") {$('#name').html('Sri-lanka');
+} else if ($xml.find('Numeric').text() == "41303") {$('#name').html('Sri-lanka');
+} else if ($xml.find('Numeric').text() == "41308") {$('#name').html('Sri-lanka');
+} else if ($xml.find('Numeric').text() == "41304") {$('#name').html('Sri-lanka');
+} else if ($xml.find('Numeric').text() == "41301") {$('#name').html('Sri-lanka');
+} else if ($xml.find('Numeric').text() == "41312") {$('#name').html('Sri-lanka');
+} else if ($xml.find('Numeric').text() == "63405") {$('#name').html('Sudan');
+} else if ($xml.find('Numeric').text() == "63402") {$('#name').html('Sudan');
+} else if ($xml.find('Numeric').text() == "63407") {$('#name').html('Sudan');
+} else if ($xml.find('Numeric').text() == "63401") {$('#name').html('Sudan');
+} else if ($xml.find('Numeric').text() == "75603") {$('#name').html('Suriname');
+} else if ($xml.find('Numeric').text() == "75605") {$('#name').html('Suriname');
+} else if ($xml.find('Numeric').text() == "56310") {$('#name').html('Swaziland');
+} else if ($xml.find('Numeric').text() == "24002") {$('#name').html('Sweden');
+} else if ($xml.find('Numeric').text() == "24017") {$('#name').html('Sweden');
+} else if ($xml.find('Numeric').text() == "24007") {$('#name').html('Sweden');
+} else if ($xml.find('Numeric').text() == "24006") {$('#name').html('Sweden');
+} else if ($xml.find('Numeric').text() == "24001") {$('#name').html('Sweden');
+} else if ($xml.find('Numeric').text() == "22805") {$('#name').html('Switzerland');
+} else if ($xml.find('Numeric').text() == "22803") {$('#name').html('Switzerland');
+} else if ($xml.find('Numeric').text() == "22802") {$('#name').html('Switzerland');
+} else if ($xml.find('Numeric').text() == "22801") {$('#name').html('Switzerland');
+} else if ($xml.find('Numeric').text() == "41702") {$('#name').html('Syria');
+} else if ($xml.find('Numeric').text() == "41701") {$('#name').html('Syria');
+} else if ($xml.find('Numeric').text() == "46605") {$('#name').html('Taiwan');
+} else if ($xml.find('Numeric').text() == "46611") {$('#name').html('Taiwan');
+} else if ($xml.find('Numeric').text() == "46601") {$('#name').html('Taiwan');
+} else if ($xml.find('Numeric').text() == "46689") {$('#name').html('Taiwan');
+} else if ($xml.find('Numeric').text() == "46697") {$('#name').html('Taiwan');
+} else if ($xml.find('Numeric').text() == "43604") {$('#name').html('Tajikistan');
+} else if ($xml.find('Numeric').text() == "43605") {$('#name').html('Tajikistan');
+} else if ($xml.find('Numeric').text() == "43603") {$('#name').html('Tajikistan');
+} else if ($xml.find('Numeric').text() == "43601") {$('#name').html('Tajikistan');
+} else if ($xml.find('Numeric').text() == "64005") {$('#name').html('Tanzania');
+} else if ($xml.find('Numeric').text() == "64009") {$('#name').html('Tanzania');
+} else if ($xml.find('Numeric').text() == "64011") {$('#name').html('Tanzania');
+} else if ($xml.find('Numeric').text() == "64002") {$('#name').html('Tanzania');
+} else if ($xml.find('Numeric').text() == "64007") {$('#name').html('Tanzania');
+} else if ($xml.find('Numeric').text() == "64004") {$('#name').html('Tanzania');
+} else if ($xml.find('Numeric').text() == "64003") {$('#name').html('Tanzania');
+} else if ($xml.find('Numeric').text() == "52001") {$('#name').html('Thailand');
+} else if ($xml.find('Numeric').text() == "52000") {$('#name').html('Thailand');
+} else if ($xml.find('Numeric').text() == "52018") {$('#name').html('Thailand');
+} else if ($xml.find('Numeric').text() == "52015") {$('#name').html('Thailand');
+} else if ($xml.find('Numeric').text() == "52099") {$('#name').html('Thailand');
+} else if ($xml.find('Numeric').text() == "61503") {$('#name').html('Togo');
+} else if ($xml.find('Numeric').text() == "61501") {$('#name').html('Togo');
+} else if ($xml.find('Numeric').text() == "53988") {$('#name').html('Tonga');
+} else if ($xml.find('Numeric').text() == "53901") {$('#name').html('Tonga');
+} else if ($xml.find('Numeric').text() == "37412") {$('#name').html('Trinidad-and-tobago');
+} else if ($xml.find('Numeric').text() == "374130") {$('#name').html('Trinidad-and-tobago');
+} else if ($xml.find('Numeric').text() == "60506") {$('#name').html('Tunisia');
+} else if ($xml.find('Numeric').text() == "60503") {$('#name').html('Tunisia');
+} else if ($xml.find('Numeric').text() == "60501") {$('#name').html('Tunisia');
+} else if ($xml.find('Numeric').text() == "60502") {$('#name').html('Tunisia');
+} else if ($xml.find('Numeric').text() == "28603") {$('#name').html('Turkey');
+} else if ($xml.find('Numeric').text() == "28601") {$('#name').html('Turkey');
+} else if ($xml.find('Numeric').text() == "28602") {$('#name').html('Turkey');
+} else if ($xml.find('Numeric').text() == "43801") {$('#name').html('Turkmenistan');
+} else if ($xml.find('Numeric').text() == "43802") {$('#name').html('Turkmenistan');
+} else if ($xml.find('Numeric').text() == "64114") {$('#name').html('Uganda');
+} else if ($xml.find('Numeric').text() == "64101") {$('#name').html('Uganda');
+} else if ($xml.find('Numeric').text() == "64110") {$('#name').html('Uganda');
+} else if ($xml.find('Numeric').text() == "64133") {$('#name').html('Uganda');
+} else if ($xml.find('Numeric').text() == "64111") {$('#name').html('Uganda');
+} else if ($xml.find('Numeric').text() == "25504") {$('#name').html('Ukraine');
+} else if ($xml.find('Numeric').text() == "25503") {$('#name').html('Ukraine');
+} else if ($xml.find('Numeric').text() == "25506") {$('#name').html('Ukraine');
+} else if ($xml.find('Numeric').text() == "25521") {$('#name').html('Ukraine');
+} else if ($xml.find('Numeric').text() == "25507") {$('#name').html('Ukraine');
+} else if ($xml.find('Numeric').text() == "25501") {$('#name').html('Ukraine');
+} else if ($xml.find('Numeric').text() == "42403") {$('#name').html('United Arab Emirates');
+} else if ($xml.find('Numeric').text() == "42402") {$('#name').html('United Arab Emirates');
+} else if ($xml.find('Numeric').text() == "23420") {$('#name').html('United-kingdom');
+} else if ($xml.find('Numeric').text() == "23400") {$('#name').html('United-kingdom');
+} else if ($xml.find('Numeric').text() == "23418") {$('#name').html('United-kingdom');
+} else if ($xml.find('Numeric').text() == "23430") {$('#name').html('United-kingdom');
+} else if ($xml.find('Numeric').text() == "23454") {$('#name').html('United-kingdom');
+} else if ($xml.find('Numeric').text() == "23458") {$('#name').html('United-kingdom');
+} else if ($xml.find('Numeric').text() == "23402") {$('#name').html('United-kingdom');
+} else if ($xml.find('Numeric').text() == "23433") {$('#name').html('United-kingdom');
+} else if ($xml.find('Numeric').text() == "23436") {$('#name').html('United-kingdom');
+} else if ($xml.find('Numeric').text() == "23430") {$('#name').html('United-kingdom');
+} else if ($xml.find('Numeric').text() == "234100") {$('#name').html('United-kingdom');
+} else if ($xml.find('Numeric').text() == "23438") {$('#name').html('United-kingdom');
+} else if ($xml.find('Numeric').text() == "23407") {$('#name').html('United-kingdom');
+} else if ($xml.find('Numeric').text() == "310016") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "311440") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "311870") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "311230") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310130") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310320") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "311010") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "311040") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310016") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310970") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "311030") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310530") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310340") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "311960") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "311660") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "311080") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310100") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310120") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310999") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310160") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310260") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310999") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310020") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310066") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310004") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310450") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310053") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "310180") {$('#name').html('United-states');
+} else if ($xml.find('Numeric').text() == "74800") {$('#name').html('Uruguay');
+} else if ($xml.find('Numeric').text() == "74810") {$('#name').html('Uruguay');
+} else if ($xml.find('Numeric').text() == "74807") {$('#name').html('Uruguay');
+} else if ($xml.find('Numeric').text() == "43404") {$('#name').html('Uzbekistan');
+} else if ($xml.find('Numeric').text() == "43406") {$('#name').html('Uzbekistan');
+} else if ($xml.find('Numeric').text() == "43405") {$('#name').html('Uzbekistan');
+} else if ($xml.find('Numeric').text() == "43407") {$('#name').html('Uzbekistan');
+} else if ($xml.find('Numeric').text() == "43408") {$('#name').html('Uzbekistan');
+} else if ($xml.find('Numeric').text() == "54105") {$('#name').html('Vanuatu');
+} else if ($xml.find('Numeric').text() == "54101") {$('#name').html('Vanuatu');
+} else if ($xml.find('Numeric').text() == "54107") {$('#name').html('Vanuatu');
+} else if ($xml.find('Numeric').text() == "73401") {$('#name').html('Venezuela');
+} else if ($xml.find('Numeric').text() == "73406") {$('#name').html('Venezuela');
+} else if ($xml.find('Numeric').text() == "73404") {$('#name').html('Venezuela');
+} else if ($xml.find('Numeric').text() == "45207") {$('#name').html('Vietnam');
+} else if ($xml.find('Numeric').text() == "45201") {$('#name').html('Vietnam');
+} else if ($xml.find('Numeric').text() == "45205") {$('#name').html('Vietnam');
+} else if ($xml.find('Numeric').text() == "45204") {$('#name').html('Vietnam');
+} else if ($xml.find('Numeric').text() == "45202") {$('#name').html('Vietnam');
+} else if ($xml.find('Numeric').text() == "42102") {$('#name').html('Yemen');
+} else if ($xml.find('Numeric').text() == "42101") {$('#name').html('Yemen');
+} else if ($xml.find('Numeric').text() == "42103") {$('#name').html('Yemen');
+} else if ($xml.find('Numeric').text() == "64501") {$('#name').html('Zambia');
+} else if ($xml.find('Numeric').text() == "64502") {$('#name').html('Zambia');
+} else if ($xml.find('Numeric').text() == "64503") {$('#name').html('Zambia');
+} else if ($xml.find('Numeric').text() == "64804") {$('#name').html('Zimbabwe');
+} else if ($xml.find('Numeric').text() == "64801") {$('#name').html('Zimbabwe');
+} else if ($xml.find('Numeric').text() == "64803") {$('#name').html('Zimbabwe');
+} else if ($xml.find('Numeric').text() == "63782") {$('#name').html('Somalia');
+} else if ($xml.find('Numeric').text() == "42105") {$('#name').html('Yemen');
+}}})}
+
+function DeviceBoot() {
+$.ajax({dataType: "text",type: "GET",async: !0,url: '/api/device/boot_time', success:function(data) {
+var xml = data,xmlDoc = $.parseXML(xml),$xml = $(xmlDoc);
+if ($xml.find('boot_time').text() == "") {
+$("#bootTime").css('display','none');
+} else {
+$("#bootTime").css('display', '');
+$('#bootTime').html(' ( ' + $xml.find('boot_time').text().replace('[', '').replace(']:[', ':').replace(']:[', ':').replace(']', '') + ' ) ');
+}}})}
+
+function Signl() {
+$.ajax({dataType: "text",type: "GET",async: !0,url: '/api/device/signal', success:function(data) {
+var xml = data,xmlDoc = $.parseXML(xml),$xml = $(xmlDoc);
+for (signal = data, vars = ["nrrsrp"], i = 0; i < vars.length; i++) window[vars[i]] = extractXML(vars[i], data), nrdefined = "undefined" != typeof nrrsrp, $(".e5").toggle(nrdefined);
+band = $xml.find('band').text();
+mode = $xml.find('mode').text();
+$('#moden').html(mode);
+cid = $xml.find('cell_id').text();
+var hex = Number(cid).toString(16);
+
+if ($xml.find('cell_id').text() == "") {
+$(".cell,.enb").css('display','none');
+} else {
+$(".cell,.enb").css('display', '');
+$('#cell_id').html(cid);
+}
+if ($xml.find('band').text() != '' && $xml.find('band').text() != '0') {
+$('#bandB').html('B' + $xml.find('band').text());
+$(".bband").css('display', '');
+} else {
+$(".bband").css('display', 'none');
+}
+if ($xml.find('sc,pci').text() == "") {
+$(".pci").css('display', 'none');
+} else {
+$(".pci").css('display', '');
+$('#pci').html(($xml.find('pci').text() == "" ? $xml.find('sc').text() : $xml.find('pci').text()));
+}
+if ($xml.find('tac,rac,lac').text() == "") {
+$(".lac").css('display', 'none');
+} else {
+$(".lac").css('display', '');
+}
+
+if (mode == '') {
+$(".mod").css('background', 'red');
+$('#modee').html('No Service');
+}
+
+if (mode == '0') {
+$('#enbid').html(cid);
+$(".mod").css('background', 'green');
+$('#modee').html('2G');
+$('#tlac').html('LAC');
+$(".bn3").css('display','');
+$(".2G,.allow").css('display','none');
+$('#lac').html($xml.find('lac').text());
+var arf2g = $xml.find('arfcn').text();
+if ($xml.find('arfcn').text() == "") {
+$(".arfc2g").css('display','none');
+} else {
+$(".arfc2g").css('display','');
+$('#earf2g').html(arf2g);
+}
+}
+
+if (mode == '2') {
+var hex2 = hex.substring(0, hex.length - 4);
+var enbid = parseInt(hex2, 16);
+var hex3 = hex.substring(hex.length - 4, hex.length);
+var shortcid = parseInt(hex3, 16);
+if (isLongID == true) {
+$('#enbid').html(parseInt(hex, 16));
+} else {
+$('#enbid').html(enbid + '/' + shortcid);
+}
+$(".mod").css('background', 'green');
+$('#modee').html('3G');
+$('#tlac').html('RAC');
+$(".2G,.e3,.bn3").css('display','');
+$(".allow,.arfc4g,.e4").css('display','none');
+$('#lac').html($xml.find('rac').text());
+var arf3g = $xml.find('wdlfreq').text();
+if ($xml.find('wdlfreq').text() == "") {
+$(".arfc3g").css('display','none');
+} else {
+$(".arfc3g").css('display','');
+$('#earf3g').html(arf3g);
+}
+}
+
+if (mode == '7') {
+var hex2 = hex.substring(0, hex.length - 2);
+var enbid = parseInt(hex2, 16);
+var hex3 = hex.substring(hex.length - 2, hex.length);
+var shortcid = parseInt(hex3, 16);
+if (isLongID == true) {
+$('#enbid').html(parseInt(hex, 16));
+} else {
+$('#enbid').html(enbid + '/' + shortcid);
+}
+$(".mod").css('background', 'green');
+$('#modee').html('4G');
+$('#tlac').html('TAC');
+$(".2G,.allow,.e4").css('display','');
+$(".e3,.bn3,.arfc3g").css('display','none');
+$('#lac').html($xml.find('tac').text());
+var arf4g = $xml.find('earfcn').text().replace('DL:','DL: ').replace('UL:',' UL: ');
+if ($xml.find('earfcn').text() == "") {
+$(".arfc4g").css('display', 'none');
+} else if ($xml.find('earfcn').text() == "DL:0 UL:0") {
+$(".arfc4g").css('display', 'none');
+} else if ($xml.find('earfcn').text() == "DL: UL:") {
+$(".arfc4g").css('display', 'none');
+} else {
+$(".arfc4g").css('display', '');
+$('#earf4g').html(arf4g);
+}
+}
+
+rssi = strA($xml.find('rssi').text().replace('dBm', '')),$('#rssi').html($xml.find('rssi').text().replace('<', '').replace('=', '').replace('>', '').replace('Unknown', '0dBm')).css('background', colorrssi(rssi, -124, -110, -95, -85, -75, -51));
+rsrp = strA($xml.find('rsrp').text().replace('dBm', '')),$('#rsrp').html($xml.find('rsrp').text().replace('<', '').replace('=', '').replace('>', '').replace('Unknown', '0dBm')).css('background', colorrsrp(rsrp, -124, -110, -95, -85, -75, -51));
+rsrq = strA($xml.find('rsrq').text().replace('dB', '')),$('#rsrq').html($xml.find('rsrq').text().replace('<', '').replace('=', '').replace('>', '').replace('Unknown', '0dB')).css('background', colorrsrq(rsrq, -30, -20, -15, -10, -6, 0));
+sinr = strA($xml.find('sinr').text().replace('dB', '')),$('#sinr').html($xml.find('sinr').text().replace('<', '').replace('=', '').replace('>', '').replace('Unknown', '0dB')).css('background', colorsinr(sinr, -15, 3, 10, 15, 22, 30));
+rscp = strA($xml.find('rscp').text().replace('dBm', '')),$('#rscp').html($xml.find('rscp').text().replace('<', '').replace('=', '').replace('>', '').replace('Unknown', '0dBm')).css('background', colorrscp(rscp, -115, -100, -90, -80, -70, -60));
+ecio = strA($xml.find('ecio').text().replace('dB', '')),$('#ecio').html($xml.find('ecio').text().replace('<', '').replace('=', '').replace('>', '').replace('Unknown', '0dB')).css('background', colorecio(ecio, -20, -20, -15, -10, -5, 0));
+
+if ($xml.find('txpower').text() == "") {
+$(".tx").css('display', 'none');
+} else {
+$(".tx").css('display', '');
+}
+var txpower = $xml.find('txpower').text();
+if (txpower.indexOf('stxpwr') == -1) {
+$('#txpow4g').html($xml.find('txpower').text().replace('PPusch:','PPusch: ').replace('PPucch:','PPucch: ').replace('PSrs:','PSrs: ').replace('PPrach:','PPrach: ').replace('dBm',', ').replace('dBm',', ').replace('dBm',', ').replace('dBm',''));
+txpower=txpower.slice(txpower.indexOf('PPucch:')+7,txpower.indexOf('PSrs:')-4),$("#txpow4g").css('background', colortx4power(txpower, -20, 0, 5, 10, 20, 23));
+} else {
+$('#txpow3g').html(txpower.replace('stxpwr:','Stxpwr: ').replace('dBm', ' dBm')),$("#txpow3g").css('background', colortx3power(txpower, -20, 0, 5, 10, 15, 23));
+}
+
+nrrsrp = strA($xml.find('nrrsrp').text().replace('dBm', '')),$('#nrrsrp').html($xml.find('nrrsrp').text().replace('<', '').replace('=', '').replace('>', '').replace('Unknown', '0dBm')).css('background', colornrrsrp(nrrsrp, -124, -115, -105, -95, -85, -85));
+nrrsrq = strA($xml.find('nrrsrq').text().replace('dB', '')),$('#nrrsrq').html($xml.find('nrrsrq').text().replace('<', '').replace('=', '').replace('>', '').replace('Unknown', '0dB')).css('background', colornrrsrq(nrrsrq, -20, -20, -15, -10, -6, 0));
+nrsinr = strA($xml.find('nrsinr').text().replace('dB', '')),$('#nrsinr').html($xml.find('nrsinr').text().replace('<', '').replace('=', '').replace('>', '').replace('Unknown', '0dB')).css('background', colornrsinr(nrsinr, -10, 3, 10, 15, 22, 30));
+
+if ($xml.find('nrtxpower').text() == "") {
+$(".nrtx").css('display', 'none');
+} else {
+$(".nrtx").css('display', '');
+}
+var nrtxpower = $xml.find('nrtxpower').text();
+$('#nrtxpow').html($xml.find('nrtxpower').text().replace('PPusch:','PPusch: ').replace('PPucch:','PPucch: ').replace('PSrs:','PSrs: ').replace('PPrach:','PPrach: ').replace('dBm',', ').replace('dBm',', ').replace('dBm',', ').replace('dBm',''));
+nrtxpower=nrtxpower.slice(nrtxpower.indexOf('PPucch:')+7,nrtxpower.indexOf('PSrs:')-4),$(".nrtxp").css('background', colornrtxpower(nrtxpower, -20, 0, 5, 10, 20, 23));
+
+var nrufreq = $xml.find('nrulfreq').text();
+var nrdfreq = $xml.find('nrdlfreq').text();
+if ($xml.find('nrdlfreq').text() == "") {
+$(".5ulf").css('display', 'none');
+} else if ($xml.find('nrdlfreq').text() == "0kHz") {
+$(".5ulf").css('display', 'none');
+} else if ($xml.find('nrdlfreq').text() == "kHz") {
+$(".5ulf").css('display', 'none');
+} else {
+$(".5ulf").css('display', '');
+$('#nrudfreq').html('DL: ' + nrdfreq + '  ' + 'UL: ' + nrufreq);
+}
+
+var lufreq = $xml.find('lteulfreq').text();
+var ldfreq = $xml.find('ltedlfreq').text();
+if ($xml.find('ltedlfreq').text() == "") {
+$(".4ulf").css('display', 'none');
+} else if ($xml.find('ltedlfreq').text() == "0") {
+$(".4ulf").css('display', 'none');
+} else {
+$(".4ulf").css('display', '');
+$('#ludfreq').html('DL: ' + ldfreq + '  ' + 'UL: ' + lufreq);
+}
+
+var dlfrequency = $xml.find('dlfrequency').text().replace('kHz', '');
+var dlfreq = Math.floor(dlfrequency / 1000);
+console.log(dlfreq);
+var ulfrequency = $xml.find('ulfrequency').text().replace('kHz','');
+var ulfreq = Math.floor(ulfrequency / 1000);
+console.log(ulfreq);
+if ($xml.find('dlfrequency').text() == "") {
+$(".ulf").css('display', 'none');
+} else if ($xml.find('dlfrequency').text() == "0kHz") {
+$(".ulf").css('display', 'none');
+} else if ($xml.find('dlfrequency').text() == "kHz") {
+$(".ulf").css('display', 'none');
+} else {
+$(".ulf").css('display', '');
+$('#dufrequency').html('DL: ' + dlfreq + 'MHz' + '  ' + 'UL: ' + ulfreq + 'MHz');
+}
+
+if ($xml.find('dlbandwidth').text() == "") {
+$(".dlul").css('display', 'none');
+} else {
+$(".dlul").css('display', '');
+}
+
+var udlbw = '';
+var dbw = $xml.find('dlbandwidth').text();
+var ubw = $xml.find('ulbandwidth').text();
+if (dbw == '1400KHz') dbw = "1.4MHz";
+if (ubw == '1400KHz') ubw = "1.4MHz";
+if ($xml.find('dlbandwidth','ulbandwidth').text() == "20MHz") {
+udlbw = '100';
+$('#ulbandwidth').html(ubw + '  (' + udlbw + '%)');
+$("#dlulbandreading, #arfcnreading").css('background', '#008013');
+} else if ($xml.find('dlbandwidth','ulbandwidth').text() == "15MHz") {
+udlbw = '75';
+$('#ulbandwidth').html(ubw + '  (' + udlbw + '%)');
+$("#dlulbandreading, #arfcnreading").css('background', '#00bb1c');
+} else if ($xml.find('dlbandwidth','ulbandwidth').text() == "10MHz") {
+udlbw = '50';
+$('#ulbandwidth').html(ubw + '  (' + udlbw + '%)');
+$("#dlulbandreading, #arfcnreading").css('background', '#c97f00');
+} else if ($xml.find('dlbandwidth','ulbandwidth').text() == "5MHz") {
+udlbw = '25';
+$('#ulbandwidth').html(ubw + '  (' + udlbw + '%)');
+$("#dlulbandreading, #arfcnreading").css('background', '#ebb400');
+} else {
+udlbw = '0';
+$('#ulbandwidth').html(ubw + '  (' + udlbw + '%)');
+$("#dlulbandreading, #arfcnreading").css('background', '#ffe600');
+}
+$('#dlbandwidth').html(dbw);
+
+var nrarfcn = $xml.find('nrearfcn').text().replace('DL:','DL: ').replace('UL:',' UL: ');
+if ($xml.find('nrearfcn').text() == "") {
+$(".nrarfc,.bnr").css('display', 'none');
+} else if ($xml.find('nrearfcn').text() == "DL:0 UL:0") {
+$(".nrarfc,.bnr").css('display', 'none');
+} else if ($xml.find('nrearfcn').text() == "DL: UL:") {
+$(".nrarfc,.bnr").css('display', 'none');
+} else {
+$(".nrarfc,.bnr").css('display', '');
+$('#nrearf').html(nrarfcn);
+}
+
+var nrband = nrarfcn.slice(3, nrarfcn.indexOf(' UL:'));
+if (nrband != '')
+$('#bandNR').html("N" + arfcntoband(nrband));
+
+if ($xml.find('nrdlbandwidth').text() == "") {
+$(".nrdlul").css('display', 'none');
+} else {
+$(".nrdlul").css('display', '');
+}
+
+var nudlbw = '';
+var nrdbw = $xml.find('nrdlbandwidth').text();
+var nrubw = $xml.find('nrulbandwidth').text();
+if ($xml.find('nrdlbandwidth','nrulbandwidth').text() == "100MHz") {
+nudlbw = '100';
+$('#nrulbw').html(nrubw + '  (' + nudlbw + '%)');
+$("#nrdlulbandreading, #nrarfcnreading").css('background', '#008013');
+} else if ($xml.find('nrdlbandwidth','nrulbandwidth').text() == "80MHz") {
+nudlbw = '75';
+$('#nrulbw').html(nrubw + '  (' + nudlbw + '%)');
+$("#nrdlulbandreading, #nrarfcnreading").css('background', '#00bb1c');
+} else if ($xml.find('nrdlbandwidth','nrulbandwidth').text() == "60MHz") {
+nudlbw = '50';
+$('#nrulbw').html(nrubw + '  (' + nudlbw + '%)');
+$("#nrdlulbandreading, #nrarfcnreading").css('background', '#c97f00');
+} else if ($xml.find('nrdlbandwidth','nrulbandwidth').text() == "40MHz") {
+nudlbw = '25';
+$('#nrulbw').html(nrubw + '  (' + nudlbw + '%)');
+$("#nrdlulbandreading, #nrarfcnreading").css('background', '#ebb400');
+} else {
+nudlbw = '0';
+$('#nrulbw').html(nrubw + '  (' + nudlbw + '%)');
+$("#nrdlulbandreading, #nrarfcnreading").css('background', '#ffe600');
+}
+$('#nrdlbw').html(nrdbw);
+
+var dlmcs = $xml.find('dl_mcs').text();
+var dlmcs0 = $xml.find('dl_mcs').text().slice(21, dlmcs.indexOf(' '));
+var dlmcs1 = $xml.find('dl_mcs').text().slice(dlmcs.indexOf('Code1:') + 6);
+if (dlmcs == '') {
+$(".mcstbs4g").css('display', 'none');
+} else {
+$(".mcstbs4g").css('display', '');
+$('#dlmcs0').html('0⇓:' + dlmcs0);
+$('#dlmcs1').html('1⇓:' + dlmcs1);
+$("#dlmcs0reading").css('background', colorcqimcs2(dlmcs0, 4, 8, 12, 20, 25, 32));
+$("#dlmcs1reading").css('background', colorcqimcs1(dlmcs1, 4, 8, 12, 20, 25, 32));
+}
+var ul_mcs = $xml.find('ul_mcs').text().replace('mcsUpCarrier1:', '');
+$('#ulmcs').html('⇑:' + ul_mcs);
+$("#ulmcsreading").css('background', colorcqimcs1(ul_mcs, 4, 8, 12, 20, 25, 28));
+
+var ultbs;
+if (ul_mcs >= 0 && ul_mcs <= 9) {ultbs = ul_mcs;}
+else if (ul_mcs >= 10 && ul_mcs <= 16) {ultbs = ul_mcs - 1;}
+else if (ul_mcs >= 17 && ul_mcs <= 31) {ultbs = ul_mcs - 2;}
+else {ultbs = 'Out';}
+$('#ultbs').html('⇑:' + ultbs);
+$("#ultbsreading").css('background', colorcqimcs2(ultbs, 4, 8, 12, 20, 25, 28));
+
+if ($xml.find('cqi0,cqi1').text() == "") {
+$(".cqi01").css('display','none');
+} else {
+$(".cqi01").css('display','');
+
+var cqi0;
+var cqi1;
+cqi0 = $xml.find('cqi0').text().replace('32639','');
+cqi1 = $xml.find('cqi1').text().replace('32639','');
+if (cqi0 != '' && cqi1 == '') {
+$('#0cqi,#1cqi').html('N/A');
+} else {
+$('#0cqi').html('0⇓:' + cqi0).css('background', colorcqimcs1(cqi0, 2, 4, 7, 10, 13, 18));
+$('#1cqi').html('1⇓:' + cqi1).css('background', colorcqimcs2(cqi1, 2, 4, 7, 10, 13, 18));
+}
+}
+
+var dltbs0;
+var dltbs1;
+if (dlmcs0 >= 0 && dlmcs0 <= 4) {QAM0 = 'QPSK';$("#QAM0").css('background', '#ff7300');}
+else if (dlmcs0 >= 5 && dlmcs0 <= 10) {QAM0 = '16QAM';$("#QAM0").css('background', '#e0ac00');}
+else if (dlmcs0 >= 11 && dlmcs0 <= 19) {QAM0 = '64QAM';$("#QAM0").css('background', '#e28f00');}
+else if (dlmcs0 >= 20 && dlmcs0 <= 27) {QAM0 = '256QAM';$("#QAM0").css('background', '#008013');}
+else if (dlmcs0 == 28) {QAM0 = 'QPSK';$("#QAM0").css('background', '#ff7300');}
+else if (dlmcs0 == 29) {QAM0 = '16QAM';$("#QAM0").css('background', '#e0ac00');}
+else if (dlmcs0 == 30) {QAM0 = '64QAM';$("#QAM0").css('background', '#e28f00');}
+else if (dlmcs0 == 31) {QAM0 = '256QAM';$("#QAM0").css('background', '#008013');}
+else {QAM0 = 'Out';$("#QAM0").css('background', '#aa0000');}
+
+if (dlmcs1 >= 0 && dlmcs1 <= 4) {QAM1 = 'QPSK';$("#QAM1").css('background', '#ff7300');}
+else if (dlmcs1 >= 5 && dlmcs1 <= 10) {QAM1 = '16QAM';$("#QAM1").css('background', '#e0ac00');}
+else if (dlmcs1 >= 11 && dlmcs1 <= 19) {QAM1 = '64QAM';$("#QAM1").css('background', '#e28f00');}
+else if (dlmcs1 >= 20 && dlmcs1 <= 27) {QAM1 = '256QAM';$("#QAM1").css('background', '#008013');}
+else if (dlmcs1 == 28) {QAM1 = 'QPSK';$("#QAM1").css('background', '#ff7300');}
+else if (dlmcs1 == 29) {QAM1 = '16QAM';$("#QAM1").css('background', '#e0ac00');}
+else if (dlmcs1 == 30) {QAM1 = '64QAM';$("#QAM1").css('background', '#e28f00');}
+else if (dlmcs1 == 31) {QAM1 = '256QAM';$("#QAM1").css('background', '#008013');}
+else {QAM1 = 'Out';$("#QAM1").css('background', '#aa0000');}
+
+if (dlmcs0 == 0) {dltbs0 = dlmcs0;}
+else if (dlmcs0 == 1) {dltbs0 = 2;}
+else if (dlmcs0 == 2) {dltbs0 = 4;}
+else if (dlmcs0 == 3) {dltbs0 = 6;}
+else if (dlmcs0 == 4) {dltbs0 = 8;}
+else if (dlmcs0 >= 5 && dlmcs0 <= 20) {dltbs0 = dlmcs0 - -5;}
+else if (dlmcs0 >= 21 && dlmcs0 <= 27) {dltbs0 = dlmcs0 - -6;}
+else if (dlmcs0 == 28) {dltbs0 = 8;}
+else if (dlmcs0 == 29) {dltbs0 = 15;}
+else if (dlmcs0 == 30) {dltbs0 = 24;}
+else if (dlmcs0 == 31) {dltbs0 = 27;}
+else {dltbs0 = 'Out';}
+
+if (dlmcs1 == 0) {dltbs1 = dlmcs1;}
+else if (dlmcs1 == 1) {dltbs1 = 2;}
+else if (dlmcs1 == 2) {dltbs1 = 4;}
+else if (dlmcs1 == 3) {dltbs1 = 6;}
+else if (dlmcs1 == 4) {dltbs1 = 8;}
+else if (dlmcs1 >= 5 && dlmcs1 <= 20) {dltbs1 = dlmcs1 - -5;}
+else if (dlmcs1 >= 21 && dlmcs1 <= 27) {dltbs1 = dlmcs1 - -6;}
+else if (dlmcs1 == 28) {dltbs1 = 8;}
+else if (dlmcs1 == 29) {dltbs1 = 15;}
+else if (dlmcs1 == 30) {dltbs1 = 24;}
+else if (dlmcs1 == 31) {dltbs1 = 27;}
+else {dltbs1 = 'Out';}
+
+$('#QAM0').html(QAM0);
+$('#QAM1').html(QAM1);
+$('#dltbs0').html('0⇓:' + dltbs0);
+$("#dltbs0reading").css('background', colortbs2(dltbs0, -0, 4, 10, 16, 17, 31));
+$('#dltbs1').html('1⇓:' + dltbs1);
+$("#dltbs1reading").css('background', colortbs1(dltbs1, -0, 4, 10, 16, 17, 31));
+
+var nrdl_mcs = $xml.find('nrdlmcs').text();
+var nrdlmcs0 = $xml.find('nrdlmcs').text().slice(23, nrdl_mcs.indexOf(' '));
+var nrdlmcs1 = $xml.find('nrdlmcs').text().slice(nrdl_mcs.indexOf('Code1:') + 6);
+if (nrdl_mcs == '') {
+$(".dlmcs5g").css('display', 'none');
+} else {
+$(".dlmcs5g").css('display', '');
+$('#nr0dlmcs').html('0⇓:' + nrdlmcs0);
+$('#nr1dlmcs').html('1⇓:' + nrdlmcs1);
+$("#nr0dlmcsreading").css('background', colorcqimcs2(nrdlmcs0, 4, 8, 12, 20, 25, 32));
+$("#nr1dlmcsreading").css('background', colorcqimcs1(nrdlmcs1, 4, 8, 12, 20, 25, 32));
+}
+var nrul_mcs = $xml.find('nrulmcs').text().replace('NRmcsUpCarrier1:','');
+$('#nrulmcs').html('⇑:' + nrul_mcs);
+$("#nrulmcsreading").css('background', colorcqimcs1(nrul_mcs, 4, 8, 12, 20, 25, 32));
+}})}
+
+function colorcqimcs1(cur, l0, l1, l2, l3, l4, l5) {
+if (cur == '') return 'linear-gradient(to right, black 100%, black 100%)';
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l5) {color = '#008013';
+} else if (cur >= l4) {color = '#00bb1c';
+} else if (cur >= l3) {color = '#e28f00';
+} else if (cur >= l2) {color = '#e0ac00';
+} else if (cur >= l1) {color = '#ff7300';
+} else {color = '#aa0000';
+}
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, black 100% ' + whitepercent + '%)';
+}
+
+function colorcqimcs2(cur, l0, l1, l2, l3, l4, l5) {
+if (cur == '') return 'linear-gradient(to right, black 100%, black 100%)';
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l5) {color = '#008013';
+} else if (cur >= l4) {color = '#00bb1c';
+} else if (cur >= l3) {color = '#e28f00';
+} else if (cur >= l2) {color = '#e0ac00';
+} else if (cur >= l1) {color = '#ff7300';
+} else {color = '#aa0000';
+}
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, black 100% ' + whitepercent + '%)';
+}
+
+function colortbs1(cur, l0, l1, l2, l3, l4, l5) {
+if (cur == '') return 'linear-gradient(to right, black 100%, black 100%)';
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l5) {color = '#008013';
+} else if (cur >= l4) {color = '#00bb1c';
+} else if (cur >= l3) {color = '#e28f00';
+} else if (cur >= l2) {color = '#e0ac00';
+} else if (cur >= l1) {color = '#ff7300';
+} else {color = '#aa0000';
+}
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, black 100% ' + whitepercent + '%)';
+}
+
+function colortbs2(cur, l0, l1, l2, l3, l4, l5) {
+if (cur == '') return 'linear-gradient(to right, black 100%, black 100%)';
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l5) {color = '#008013';
+} else if (cur >= l4) {color = '#00bb1c';
+} else if (cur >= l3) {color = '#e28f00';
+} else if (cur >= l2) {color = '#e0ac00';
+} else if (cur >= l1) {color = '#ff7300';
+} else {color = '#aa0000';
+}
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, black 100% ' + whitepercent + '%)';
+}
+
+function colorrssi(cur, l0, l1, l2, l3, l4, l5) {
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l5) {rssitxStr = "Excellent"; color = '#008013';
+} else if (cur >= l4) {rssitxStr = "V.Good"; color = '#00bb1c';
+} else if (cur >= l3) {rssitxStr = "Good"; color = '#e28f00';
+} else if (cur >= l2) {rssitxStr = "Midlde"; color = '#e0ac00';
+} else if (cur >= l1) {rssitxStr = "Weak"; color = '#ff7300';
+} else {rssitxStr = "Bad"; color = '#aa0000';
+}
+$('.rssib').css('background', color);
+$('#rssipercent').html(whitepercent + "%" + "  " +  rssitxStr);
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, hsla(0,0%,100%,0.0) ' + whitepercent + '%)';
+}
+
+function colorrscp(cur, l0, l1, l2, l3, l4, l5) {
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l5) {rscptxStr = "Excellent"; color = '#008013';
+} else if (cur >= l4) {rscptxStr = "V.Good"; color = '#00bb1c';
+} else if (cur >= l3) {rscptxStr = "Good"; color = '#e28f00';
+} else if (cur >= l2) {rscptxStr = "Midlde"; color = '#e0ac00';
+} else if (cur >= l1) {rscptxStr = "Weak"; color = '#ff7300';
+} else {rscptxStr = "Bad"; color = '#aa0000';
+}
+$('.rscpb').css('background', color);
+$('#rscppercent').html(whitepercent + "%" + "  " +  rscptxStr);
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, hsla(0,0%,100%,0.0) ' + whitepercent + '%)';
+}
+
+function colorecio(cur, l0, l1, l2, l3, l4, l5) {
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l5) {eciotxStr = "Excellent"; color = '#008013';
+} else if (cur >= l4) {eciotxStr = "V.Good"; color = '#00bb1c';
+} else if (cur >= l3) {eciotxStr = "Good"; color = '#e28f00';
+} else if (cur >= l2) {eciotxStr = "Midlde"; color = '#e0ac00';
+} else if (cur >= l1) {eciotxStr = "Weak"; color = '#ff7300';
+} else {eciotxStr = "Bad"; color = '#aa0000';
+}
+$('.eciob').css('background', color);
+$('#eciopercent').html(whitepercent + "%" + "  " +  eciotxStr);
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, hsla(0,0%,100%,0.0) ' + whitepercent + '%)';
+}
+
+function colorrsrp(cur, l0, l1, l2, l3, l4, l5) {
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l5) {rsrptxStr = "Excellent"; color = '#008013';
+} else if (cur >= l4) {rsrptxStr = "V.Good"; color = '#00bb1c';
+} else if (cur >= l3) {rsrptxStr = "Good"; color = '#e28f00';
+} else if (cur >= l2) {rsrptxStr = "Midlde"; color = '#e0ac00';
+} else if (cur >= l1) {rsrptxStr = "Weak"; color = '#ff7300';
+} else {rsrptxStr = "Bad"; color = '#aa0000';
+}
+$('.rsrpb').css('background', color);
+$('#rsrppercent').html(whitepercent + "%" + "  " +  rsrptxStr);
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, hsla(0,0%,100%,0.0) ' + whitepercent + '%)';
+}
+
+function colorrsrq(cur, l0, l1, l2, l3, l4, l5) {
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l5) {rsrqtxStr = "Excellent"; color = '#008013';
+} else if (cur >= l4) {rsrqtxStr = "V.Good"; color = '#00bb1c';
+} else if (cur >= l3) {rsrqtxStr = "Good"; color = '#e28f00';
+} else if (cur >= l2) {rsrqtxStr = "Midlde"; color = '#e0ac00';
+} else if (cur >= l1) {rsrqtxStr = "Weak"; color = '#ff7300';
+} else {rsrqtxStr = "Bad"; color = '#aa0000';
+}
+$('.rsrqb').css('background', color);
+$('#rsrqpercent').html(whitepercent + "%" + "  " +  rsrqtxStr);
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, hsla(0,0%,100%,0.0) ' + whitepercent + '%)';
+}
+
+function colorsinr(cur, l0, l1, l2, l3, l4, l5) {
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l5) {sinrtxStr = "Excellent"; color = '#008013';
+} else if (cur >= l4) {sinrtxStr = "V.Good"; color = '#00bb1c';
+} else if (cur >= l3) {sinrtxStr = "Good"; color = '#e28f00';
+} else if (cur >= l2) {sinrtxStr = "Midlde"; color = '#e0ac00';
+} else if (cur >= l1) {sinrtxStr = "Weak"; color = '#ff7300';
+} else {sinrtxStr = "Bad"; color = '#aa0000';
+}
+$('.sinrb').css('background', color);
+$('#sinrpercent').html(whitepercent + "%" + "  " +  sinrtxStr);
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, hsla(0,0%,100%,0.0) ' + whitepercent + '%)';
+}
+
+function colortx3power(cur, l0, l1, l2, l3, l4, l5) {
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+if (percent < 10) percent = 10;
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l4) {color = '#aa0000';
+} else if (cur >= l3) {color = '#ff7300';
+} else if (cur >= l2) {color = '#e28f00';
+} else if (cur >= l1) {color = '#00bb1c';
+} else {color = '#008013';
+}
+$('.tx3b').css('background', color);
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, hsla(0,0%,100%,0.0) ' + whitepercent + '%)';
+}
+
+function colortx4power(cur, l0, l1, l2, l3, l4, l5) {
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+if (percent < 10) percent = 10;
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l4) {color = '#aa0000';
+} else if (cur >= l3) {color = '#ff7300';
+} else if (cur >= l2) {color = '#e28f00';
+} else if (cur >= l1) {color = '#00bb1c';
+} else {color = '#008013';
+}
+$('.tx4b').css('background', color);
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, hsla(0,0%,100%,0.0) ' + whitepercent + '%)';
+}
+
+function colornrrsrp(cur, l0, l1, l2, l3, l4, l5) {
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l5) {nrrsrptxStr = "Excellent"; color = '#008013';
+} else if (cur >= l4) {nrrsrptxStr = "V.Good"; color = '#00bb1c';
+} else if (cur >= l3) {nrrsrptxStr = "Good"; color = '#e28f00';
+} else if (cur >= l2) {nrrsrptxStr = "Midlde"; color = '#e0ac00';
+} else if (cur >= l1) {nrrsrptxStr = "Weak"; color = '#ff7300';
+} else {nrrsrptxStr = "Bad"; color = '#aa0000';
+}
+$('.nrrsrpb').css('background', color);
+$('#nrrsrppercent').html(whitepercent + "%" + "  " +  nrrsrptxStr);
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, hsla(0,0%,100%,0.0) ' + whitepercent + '%)';
+}
+
+function colornrrsrq(cur, l0, l1, l2, l3, l4, l5) {
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l5) {nrrsrqtxStr = "Excellent"; color = '#008013';
+} else if (cur >= l4) {nrrsrqtxStr = "V.Good"; color = '#00bb1c';
+} else if (cur >= l3) {nrrsrqtxStr = "Good"; color = '#e28f00';
+} else if (cur >= l2) {nrrsrqtxStr = "Midlde"; color = '#e0ac00';
+} else if (cur >= l1) {nrrsrqtxStr = "Weak"; color = '#ff7300';
+} else {nrrsrqtxStr = "Bad"; color = '#aa0000';
+}
+$('.nrrsrqb').css('background', color);
+$('#nrrsrqpercent').html(whitepercent + "%" + "  " +  nrrsrqtxStr);
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, hsla(0,0%,100%,0.0) ' + whitepercent + '%)';
+}
+
+function colornrsinr(cur, l0, l1, l2, l3, l4, l5) {
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l5) {nrsinrtxStr = "Excellent"; color = '#008013';
+} else if (cur >= l4) {nrsinrtxStr = "V.Good"; color = '#00bb1c';
+} else if (cur >= l3) {nrsinrtxStr = "Good"; color = '#e28f00';
+} else if (cur >= l2) {nrsinrtxStr = "Midlde"; color = '#e0ac00';
+} else if (cur >= l1) {nrsinrtxStr = "Weak"; color = '#ff7300';
+} else {nrsinrtxStr = "Bad"; color = '#aa0000';
+}
+$('.nrsinrb').css('background', color);
+$('#nrsinrpercent').html(whitepercent + "%" + "  " +  nrsinrtxStr);
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, hsla(0,0%,100%,0.0) ' + whitepercent + '%)';
+}
+
+function colornrtxpower(cur, l0, l1, l2, l3, l4, l5) {
+if (cur < l0) cur = l0;
+if (cur > l5) cur = l5;
+var percent = parseInt((cur - l0) * 100 / (l5 - l0));
+if (percent < 10) percent = 10;
+var whitepercent = percent + 1;
+if (whitepercent > 100) whitepercent = 100;
+if (cur >= l4) {color = '#aa0000';
+} else if (cur >= l3) {color = '#ff7300';
+} else if (cur >= l2) {color = '#e28f00';
+} else if (cur >= l1) {color = '#00bb1c';
+} else {color = '#008013';
+}
+$('.nrtxp').css('background', color);
+return 'linear-gradient(to right, ' + color + ' ' + percent + '%, hsla(0,0%,100%,0.0) ' + whitepercent + '%)';
+}
+
+function strA(val) {
+val = val.replace('&gt;=', '');
+val = val.replace('&amp;lt;=', '');
+val = val.replace('&lt;', '');
+val = val.replace('>', '');
+val = val.replace('<', '');
+val = val.replace('=', '');
+val = val.replace('NaN', '0');
+return val;
+}
+
+function getNetmode() {
+$.ajax({type: "GET",dataType: "text",async: !0,url: "/api/net/net-mode",success: function (data) {
+var xml = data,xmlDoc = $.parseXML(xml),$xml = $(xmlDoc);
+nroption = $xml.find('networkOption').text();
+if (nroption != '') {
+if (nroption == '0') {
+$('#leftband').html('5G NSA');
+$('#btnNSA').prop('checked', false);
+$("#nsacol").css('color', 'yellow').css('background', 'green').css('font-weight', 'bold');
+} else if (nroption == '1') {
+$('#leftband').html('5G SA');
+$('#btnSA').prop('checked', false);
+$("#sacol").css('color', 'yellow').css('background', 'green').css('font-weight', 'bold');
+} else if (nroption == '2') {
+$('#leftband').html('5G SA+NSA');
+$('#btnSANSA').prop('checked', false);
+$("#sansacol").css('color', 'yellow').css('background', 'green').css('font-weight', 'bold');
+}
+nroption = "<networkOption>" + nroption + "</networkOption>";
+}
+netmode = data, lteband = extractXML("LTEBand", data), $("#allowed").html(_4GType(lteband));
+netmode = data, lteband = extractXML("LTEBand", data), $("#bando").html(B_4GType(lteband));
+netmode = data, NetworkBand = extractXML("NetworkBand", data), $("#band3").html(B_2G_3GType(NetworkBand));
+netmode = data, extractXML("LTEBand", data), $("#LLTEBand").html($xml.find('LTEBand').text());
+netmode = data, extractXML("NetworkBand", data), $("#LNetworkBand").html($xml.find('NetworkBand').text());
+netmode = data, extractXML("NetworkMode", data), $("#LNetMode").html($xml.find('NetworkMode').text());
+netmode = data, NetOption = extractXML("networkOption", data), NetOption ? $("#NetOption").html($xml.find('networkOption').text()): $(".neo").css('display', 'none');
+}})}
+
+function _4GType(n) {
+if ((n == '20800800C5') || (n == '7FFFFFFFFFFFFFFF') || (n == '1A000000001') || (n == '1A000000085') || (n == '2000000085') || (n == '7E2880800D5') || (n == '7A0880800D5') || (n == '20000800C5') || (n == '20880800C5') || (n == '3E2880800D5') || (n == '1A08A0C00DD') || (n == '7E2880800D0') || (n == '1A08A0C00DF') || (n == 'A0880800C1') || (n == 'A0880800C5') || (n == '1A008080085') || (n == '7A0000800C5') || (n == '1A000080085') || (n == '1E20A000095') || (n == '7E2880E00D5') || (n == '2000000680380')) { return "Auto"; }
+for (data_out = "", x = 0; x < 90; x++) tb = Math.pow(2, x), color = BigInt("0x" + n) & BigInt(tb) ? (data_out += "B" + String(x + 1) + "+", "#686") : "transparent", $("#cb" + String(x + 1)).css("background", color);
+return data_out = data_out.replace(/\++$/, ""), data_out}
+
+function getInfo() {
+$.ajax({dataType: "text",type: "GET",async: !0,url: '/api/device/information', success:function(data) {
+var xml = data,xmlDoc = $.parseXML(xml),$xml = $(xmlDoc);
+$('#model').html(' ( ' + conMod($xml.find('DeviceName').text()) + ' ) ');
+$('#Software').html(' ( ' + conMod($xml.find('SoftwareVersion').text()) + ' ) ');
+$('#WebUI').html(' ( ' + conMod($xml.find('WebUIVersion').text()) + ' ) ');
+havename = true;
+getantennastatus();
+if ($xml.find('WanIPAddress').text() == "") {
+ipAddr = $xml.find('SecondWanIPAddress').text(), $xml.find('WanIPAddress').text();
+$("#ipv4").css('display', 'none');
+} else {
+ipAddr = $xml.find('WanIPAddress').text(), $xml.find('SecondWanIPAddress').text();
+$("#ipv4").css('display', '');
+$('#ipv4').html(' ( ' + ipAddr + ' ) ');
+}}})}
+
+function getStatus() {
+$.ajax({dataType: "text",type: "GET",async: !0,url: '/api/monitoring/status', success:function(data) {
+var xml = data,xmlDoc = $.parseXML(xml),$xml = $(xmlDoc);
+if (conMod($xml.find('ConnectionStatus').text()) == "Connected") {
+$("#stat").css('background', '#008000');
+$("#conn").css('color', '#d1cece');
+} else if (conMod($xml.find('ConnectionStatus').text()) == "Connecting") {
+$("#stat").css('background', '#c97f00');
+$("#conn").css('color', '#d1cece');
+} else {
+$("#stat").css('background', '#aa0000');
+$("#conn").css('color', '#d1cece');
+}
+$('#conn').html(' ( ' + conMod($xml.find('ConnectionStatus').text()) + ' ) ');
+
+if (conMod($xml.find('ConnectionStatus').text() == "")) {
+$('#conn').html("Not Connected");
+} else {
+$('#conn').html(' ( ' + conMod($xml.find('ConnectionStatus').text()) + ' ) ');
+}
+if (netType($xml.find('CurrentNetworkTypeEx').text() == "")) {
+$('#mode').html("Not Connected");
+} else {
+$('#mode').html(netType($xml.find('CurrentNetworkTypeEx').text()));
+}
+if ($xml.find('PrimaryDns').text() == "") {
+$("#wanipv4dns").css('display', 'none');
+} else {
+$("#wanipv4dns").css('display', '');
+$('#wanipv4dns').html(' ( ' + $xml.find('PrimaryDns').text() + ' / ' + $xml.find('SecondaryDns').text() + ' ) ');
+}
+
+var signalicon = $xml.find('SignalIcon').text();
+$("#signal1").css('background', '#b7d9fe');
+$("#signal2").css('background', '#b7d9fe');
+$("#signal3").css('background', '#b7d9fe');
+$("#signal4").css('background', '#b7d9fe');
+$("#signal5").css('background', '#b7d9fe');
+if (signalicon >= '1') $("#signal1").css('background', '#b82222');
+if (signalicon >= '2') $("#signal2").css('background', '#b87022');
+if (signalicon >= '3') $("#signal3").css('background', '#cbdf1b');
+if (signalicon >= '4') $("#signal4").css('background', '#81c332');
+if (signalicon >= '5') $("#signal5").css('background', '#3d7e00');
+
+var signaliconnr = $xml.find('SignalIconNr').text();
+$("#nrsignal1").css('background', '#b7d9fe');
+$("#nrsignal2").css('background', '#b7d9fe');
+$("#nrsignal3").css('background', '#b7d9fe');
+$("#nrsignal4").css('background', '#b7d9fe');
+$("#nrsignal5").css('background', '#b7d9fe');
+if (signaliconnr >= '1') $("#nrsignal1").css('background', '#b82222');
+if (signaliconnr >= '2') $("#nrsignal2").css('background', '#b87022');
+if (signaliconnr >= '3') $("#nrsignal3").css('background', '#cbdf1b');
+if (signaliconnr >= '4') $("#nrsignal4").css('background', '#81c332');
+if (signaliconnr >= '5') $("#nrsignal5").css('background', '#3d7e00');
+}})}
+
+function conMod(mode) {
+switch (mode) {
+case "900":return "Connecting";
+case "901":return "Connected";
+case "902":return "Not Connected";
+case "903":return "Disconnect";
+case "904":return "Connection Failed";
+case "905":return "No Service";
+case "906":return "Connection Error";
+case "33":return "Disconnected";
+case "0":return "Disconnected";
+default:return mode;
+}}
+
+function netType(mode) {
+switch (mode) {
+case "0":return 'No Service';
+case "1":return 'GSM (2G)';
+case "2":return 'GPRS (2G)';
+case "3":return 'EDGE (2G)';
+case "41":return 'UMTS (3G)';
+case "42":return 'HSDPA (3G)';
+case "43":return 'HSUPA (3G)';
+case "44":return 'HSPA (3G)';
+case "45":return 'HSPA+ (3.5G)';
+case "46":return 'DC-HSPA+ (3.5G)';
+case "101":return 'LTE (4G)';
+case "1011":return 'LTE CA (4G+)';
+case "111":return 'NR (5G)';
+default:return mode;
+}}
+
+function B_2G_3GType(value) {
+switch (value) {
+case "80": return "2G 1800MHz";
+case "300": return "2G 900MHz";
+case "80000": return "2G 850MHz";
+case "400000":
+$("#w01").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold'); return "3G 2100MHz";
+case "800000":
+$("#w02").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold'); return "3G 1900MHz";
+case "2000000":
+$("#w04").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold'); return "3G 1700MHz";
+case "4000000":
+$("#w05").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold'); return "3G 850MHz";
+case "8000000":
+$("#w06").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold'); return "3G 800MHz";
+case "2000000000000":
+$("#w08").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold'); return "3G 900MHz";
+case "4000000000000":
+$("#w09").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold'); return "3G 1700MHz";
+case "1000000000000000":
+$("#w019").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold'); return "3G 800MHz";
+case "3FFFFFFF": return "Auto";
+default: return "" + value;}}
+
+function B_4GType(value) {
+b1 = 0x1; b2 = 0x2; b3 = 0x4; b4 = 0x8; b5 = 0x10; b7 = 0x40; b8 = 0x80; b11 = 0x400; b12 = 0x800; b13 = 0x1000; b14 = 0x2000; b17 = 0x10000; b18 = 0x20000; b19 = 0x40000; b20 = 0x80000; b21 = 0x100000; b24 = 0x800000; b25 = 0x1000000; b26 = 0x2000000; b28 = 0x8000000; b29 = 0x10000000; b30 = 0x20000000; b31 = 0x40000000; b32 = 0x80000000; b34 = 0x200000000; b37 = 0x1000000000; b38 = 0x2000000000; b39 = 0x4000000000; b40 = 0x8000000000; b41 = 0x10000000000; b42 = 0x20000000000; b43 = 0x40000000000; b44 = 0x80000000000; b46 = 0x200000000000; b47 = 0x400000000000; b48 = 0x800000000000; b49 = 0x1000000000000; b50 = 0x2000000000000; b51 = 0x4000000000000; b52 = 0x8000000000000; b53 = 0x10000000000000;
+var lteBand = " ";
+var lbm = parseInt(value, 16);
+if ((value == '20800800C5') || (value == '7FFFFFFFFFFFFFFF') || (value == '1A000000001') || (value == '1A000000085') || (value == '2000000085') || (value == '7E2880800D5') || (value == '7A0880800D5') || (value == '20000800C5') || (value == '20880800C5') || (value == '3E2880800D5') || (value == '1A08A0C00DD') || (value == '7E2880800D0') || (value == '1A08A0C00DF') || (value == 'A0880800C1') || (value == 'A0880800C5') || (value == '1A008080085') || (value == '7A0000800C5') || (value == '1A000080085') || (value == '1E20A000095') || (value == '7E2880E00D5') || (value == '2000000680380')) {
+lteBand = "Auto";
+} else {
+if ((lbm & b1) != 0) {
+lteBand = lteBand + "2100" + "\/";$("#01").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b2) != 0) {
+lteBand = lteBand + "1900" + "\/";$("#02").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b3) != 0) {
+lteBand = lteBand + "1800" + "\/";$("#03").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b4) != 0) {
+lteBand = lteBand + "1700" + "\/";$("#04").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b5) != 0) {
+lteBand = lteBand + "850" + "\/";$("#05").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b7) != 0) {
+lteBand = lteBand + "2600" + "\/";$("#07").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b8) != 0) {
+lteBand = lteBand + "900" + "\/";$("#08").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b11) != 0) {
+lteBand = lteBand + "1500" + "\/";$("#011").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b12) != 0) {
+lteBand = lteBand + "700" + "\/";$("#012").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b13) != 0) {
+lteBand = lteBand + "700" + "\/";$("#013").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b14) != 0) {
+lteBand = lteBand + "700" + "\/";$("#014").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b17) != 0) {
+lteBand = lteBand + "700" + "\/";$("#017").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b18) != 0) {
+lteBand = lteBand + "850" + "\/";$("#018").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b19) != 0) {
+lteBand = lteBand + "850" + "\/";$("#019").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b20) != 0) {
+lteBand = lteBand + "800" + "\/";$("#020").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b21) != 0) {
+lteBand = lteBand + "1500" + "\/";$("#021").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b24) != 0) {
+lteBand = lteBand + "1600" + "\/";$("#024").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b25) != 0) {
+lteBand = lteBand + "1900" + "\/";$("#025").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b26) != 0) {
+lteBand = lteBand + "850" + "\/";$("#026").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b28) != 0) {
+lteBand = lteBand + "700" + "\/";$("#028").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b29) != 0) {
+lteBand = lteBand + "700" + "\/";$("#029").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b30) != 0) {
+lteBand = lteBand + "2300" + "\/";$("#030").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b31) != 0) {
+lteBand = lteBand + "450" + "\/";$("#031").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if ((lbm & b32) != 0) {
+lteBand = lteBand + "1500" + "\/";$("#032").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b34) != 0) {
+lteBand = lteBand + "2000" + "\/";$("#034").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b37) != 0) {
+lteBand = lteBand + "1900" + "\/";$("#037").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b38) != 0) {
+lteBand = lteBand + "2600" + "\/";$("#038").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b39) != 0) {
+lteBand = lteBand + "1900" + "\/";$("#039").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b40) != 0) {
+lteBand = lteBand + "2300" + "\/";$("#040").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b41) != 0) {
+lteBand = lteBand + "2500" + "\/";$("#041").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b42) != 0) {
+lteBand = lteBand + "3500" + "\/";$("#042").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b43) != 0) {
+lteBand = lteBand + "3700" + "\/";$("#043").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b44) != 0) {
+lteBand = lteBand + "700" + "\/";$("#044").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b46) != 0) {
+lteBand = lteBand + "5200" + "\/";$("#046").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b47) != 0) {
+lteBand = lteBand + "5900" + "\/";$("#047").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b48) != 0) {
+lteBand = lteBand + "3500" + "\/";$("#048").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b49) != 0) {
+lteBand = lteBand + "3500" + "\/";$("#049").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b50) != 0) {
+lteBand = lteBand + "1500" + "\/";$("#050").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b51) != 0) {
+lteBand = lteBand + "1500" + "\/";$("#051").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b52) != 0) {
+lteBand = lteBand + "3300" + "\/";$("#052").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (BitwiseAndLarge(lbm, b53) != 0) {
+lteBand = lteBand + "2500" + "\/";$("#053").css('background', 'green').css('color', 'yellow').css('font-weight', 'bold');}
+
+if (lteBand.substring(lteBand.length - 1, lteBand.length) == "\/") {lteBand = lteBand.substring(0, lteBand.length - 1);}
+return lteBand;}
+}
+
+function BitwiseAndLarge(val1, val2) {
+var shift = 0,
+result = 0;
+var mask = ~((~0) << 30);
+var divisor = 1 << 30;
+while ((val1 != 0) && (val2 != 0)) {
+var rs = (mask & val1) & (mask & val2);
+val1 = Math.floor(val1 / divisor);
+val2 = Math.floor(val2 / divisor);
+var i = shift++;
+for (i; i--;) {
+rs *= divisor;
+}
+result += rs;
+}
+return result;
+}
+
+function ReadHardBand() {
+$.ajax({dataType: "text",type: "GET",async: !0,url: '/api/net/net-mode-list', success:function(data) {
+var xml = data,xmlDoc = $.parseXML(xml),$xml = $(xmlDoc);
+var NetMode = $xml.find('Access').text();
+if (NetMode.indexOf("01") > -1) {$(".sh2G").css('display','');} else {$(".sh2G").css('display','none');}
+if (NetMode.indexOf("02") > -1) {$(".sh3G").css('display','');} else {$(".sh3G").css('display','none');}
+
+var BandList = $xml.find('BandList').text();
+var xmlt = xml.slice(xml.indexOf("<BandList>"), xml.indexOf("</BandList>"));
+if (xmlt.indexOf("All bands") > -1) {
+xmlt = xmlt.slice(0, xmlt.indexOf("All bands"));
+}
+var val ='';
+while (xmlt.indexOf("<Value>") > -1) {
+val = xmlt.slice(xmlt.indexOf("<Value>") + 7, xmlt.indexOf("</Value>"));
+show3G(val);
+xmlt = xmlt.replace('<Value>' + val + '</Value>', "");
+}
+xmlt = xml.slice(xml.indexOf("<LTEBand>"), xml.indexOf("</LTEBand>"));
+val = xmlt.slice(xmlt.indexOf("<Value>") + 7, xmlt.indexOf("</Value>"));
+show4G(val);
+}})}
+
+function show3G(val) {
+var x = hex_to_bin(val);
+x = x.split("").reverse().join("");
+if (x.charAt(22) == '1') {$("#sWB1").css('display','');} else {$("#sWB1").css('display','none');}
+if (x.charAt(23) == '1') {$("#sWB2").css('display','');} else {$("#sWB2").css('display','none');}
+if (x.charAt(25) == '1') {$("#sWB4").css('display','');} else {$("#sWB4").css('display','none');}
+if (x.charAt(26) == '1') {$("#sWB5").css('display','');} else {$("#sWB5").css('display','none');}
+if (x.charAt(27) == '1') {$("#sWB6").css('display','');} else {$("#sWB6").css('display','none');}
+if (x.charAt(49) == '1') {$("#sWB8").css('display','');} else {$("#sWB8").css('display','none');}
+if (x.charAt(50) == '1') {$("#sWB9").css('display','');} else {$("#sWB9").css('display','none');}
+if (x.charAt(60) == '1') {$("#sWB19").css('display','');} else {$("#sWB19").css('display','none');}
+}
+
+function show4G(val) {
+var x = hex_to_bin(val);
+x = '2' + x.split("").reverse().join("");
+if (x.charAt(1) == '1') {$("#sB1").css('display','');} else {$("#sB1").css('display','none');}
+if (x.charAt(2) == '1') {$("#sB2").css('display','');} else {$("#sB2").css('display','none');}
+if (x.charAt(3) == '1') {$("#sB3").css('display','');} else {$("#sB3").css('display','none');}
+if (x.charAt(4) == '1') {$("#sB4").css('display','');} else {$("#sB4").css('display','none');}
+if (x.charAt(5) == '1') {$("#sB5").css('display','');} else {$("#sB5").css('display','none');}
+if (x.charAt(7) == '1') {$("#sB7").css('display','');} else {$("#sB7").css('display','none');}
+if (x.charAt(8) == '1') {$("#sB8").css('display','');} else {$("#sB8").css('display','none');}
+if (x.charAt(12) == '1') {$("#sB12").css('display','');} else {$("#sB12").css('display','none');}
+if (x.charAt(13) == '1') {$("#sB13").css('display','');} else {$("#sB13").css('display','none');}
+if (x.charAt(17) == '1') {$("#sB17").css('display','');} else {$("#sB17").css('display','none');}
+if (x.charAt(18) == '1') {$("#sB18").css('display','');} else {$("#sB18").css('display','none');}
+if (x.charAt(19) == '1') {$("#sB19").css('display','');} else {$("#sB19").css('display','none');}
+if (x.charAt(20) == '1') {$("#sB20").css('display','');} else {$("#sB20").css('display','none');}
+if (x.charAt(25) == '1') {$("#sB25").css('display','');} else {$("#sB25").css('display','none');}
+if (x.charAt(26) == '1') {$("#sB26").css('display','');} else {$("#sB26").css('display','none');}
+if (x.charAt(27) == '1') {$("#sB27").css('display','');} else {$("#sB27").css('display','none');}
+if (x.charAt(28) == '1') {$("#sB28").css('display','');} else {$("#sB28").css('display','none');}
+if (x.charAt(29) == '1') {$("#sB29").css('display','');} else {$("#sB29").css('display','none');}
+if (x.charAt(30) == '1') {$("#sB30").css('display','');} else {$("#sB30").css('display','none');}
+if (x.charAt(32) == '1') {$("#sB32").css('display','');} else {$("#sB32").css('display','none');}
+if (x.charAt(34) == '1') {$("#sB34").css('display','');} else {$("#sB34").css('display','none');}
+if (x.charAt(38) == '1') {$("#sB38").css('display','');} else {$("#sB38").css('display','none');}
+if (x.charAt(39) == '1') {$("#sB39").css('display','');} else {$("#sB39").css('display','none');}
+if (x.charAt(40) == '1') {$("#sB40").css('display','');} else {$("#sB40").css('display','none');}
+if (x.charAt(41) == '1') {$("#sB41").css('display','');} else {$("#sB41").css('display','none');}
+if (x.charAt(42) == '1') {$("#sB42").css('display','');} else {$("#sB42").css('display','none');}
+if (x.charAt(43) == '1') {$("#sB43").css('display','');} else {$("#sB43").css('display','none');}
+if (x.charAt(44) == '1') {$("#sB44").css('display','');} else {$("#sB44").css('display','none');}
+if (x.charAt(46) == '1') {$("#sB46").css('display','');} else {$("#sB46").css('display','none');}
+if (x.charAt(47) == '1') {$("#sB47").css('display','');} else {$("#sB47").css('display','none');}
+if (x.charAt(48) == '1') {$("#sB48").css('display','');} else {$("#sB48").css('display','none');}
+if (x.charAt(49) == '1') {$("#sB49").css('display','');} else {$("#sB49").css('display','none');}
+if (x.charAt(50) == '1') {$("#sB50").css('display','');} else {$("#sB50").css('display','none');}
+if (x.charAt(51) == '1') {$("#sB51").css('display','');} else {$("#sB51").css('display','none');}
+if (x.charAt(52) == '1') {$("#sB52").css('display','');} else {$("#sB52").css('display','none');}
+if (x.charAt(53) == '1') {$("#sB53").css('display','');} else {$("#sB53").css('display','none');}
+}
+
+function clearband() {
+$("#WB1").prop('checked',false),$("#w01").css('background','').css('color','');
+$("#WB2").prop('checked',false),$("#w02").css('background','').css('color','');
+$("#WB4").prop('checked',false),$("#w04").css('background','').css('color','');
+$("#WB5").prop('checked',false),$("#w05").css('background','').css('color','');
+$("#WB6").prop('checked',false),$("#w06").css('background','').css('color','');
+$("#WB8").prop('checked',false),$("#w08").css('background','').css('color','');
+$("#WB9").prop('checked',false),$("#w09").css('background','').css('color','');
+$("#WB19").prop('checked',false),$("#w019").css('background','').css('color','');
+$("#B1").prop('checked',false),$("#01").css('background','').css('color','');
+$("#B2").prop('checked',false),$("#02").css('background','').css('color','');
+$("#B3").prop('checked',false),$("#03").css('background','').css('color','');
+$("#B4").prop('checked',false),$("#04").css('background','').css('color','');
+$("#B5").prop('checked',false),$("#05").css('background','').css('color','');
+$("#B7").prop('checked',false),$("#07").css('background','').css('color','');
+$("#B8").prop('checked',false),$("#08").css('background','').css('color','');
+$("#B12").prop('checked',false),$("#012").css('background','').css('color','');
+$("#B13").prop('checked',false),$("#013").css('background','').css('color','');
+$("#B17").prop('checked',false),$("#017").css('background','').css('color','');
+$("#B18").prop('checked',false),$("#018").css('background','').css('color','');
+$("#B19").prop('checked',false),$("#019").css('background','').css('color','');
+$("#B20").prop('checked',false),$("#020").css('background','').css('color','');
+$("#B25").prop('checked',false),$("#025").css('background','').css('color','');
+$("#B26").prop('checked',false),$("#026").css('background','').css('color','');
+$("#B27").prop('checked',false),$("#027").css('background','').css('color','');
+$("#B28").prop('checked',false),$("#028").css('background','').css('color','');
+$("#B29").prop('checked',false),$("#029").css('background','').css('color','');
+$("#B30").prop('checked',false),$("#030").css('background','').css('color','');
+$("#B32").prop('checked',false),$("#032").css('background','').css('color','');
+$("#B34").prop('checked',false),$("#034").css('background','').css('color','');
+$("#B38").prop('checked',false),$("#038").css('background','').css('color','');
+$("#B39").prop('checked',false),$("#039").css('background','').css('color','');
+$("#B40").prop('checked',false),$("#040").css('background','').css('color','');
+$("#B41").prop('checked',false),$("#041").css('background','').css('color','');
+$("#B42").prop('checked',false),$("#042").css('background','').css('color','');
+$("#B43").prop('checked',false),$("#043").css('background','').css('color','');
+$("#B44").prop('checked',false),$("#044").css('background','').css('color','');
+$("#B46").prop('checked',false),$("#046").css('background','').css('color','');
+$("#B47").prop('checked',false),$("#047").css('background','').css('color','');
+$("#B48").prop('checked',false),$("#048").css('background','').css('color','');
+$("#B49").prop('checked',false),$("#049").css('background','').css('color','');
+$("#B50").prop('checked',false),$("#050").css('background','').css('color','');
+$("#B51").prop('checked',false),$("#051").css('background','').css('color','');
+$("#B52").prop('checked',false),$("#052").css('background','').css('color','');
+$("#B53").prop('checked',false),$("#053").css('background','').css('color','');
+$("#btnNSA").prop('checked',false),$("#nsacol").css('background','').css('color','');
+$("#btnSA").prop('checked',false),$("#sacol").css('background','').css('color','');
+$("#btnSANSA").prop('checked',false),$("#sansacol").css('background','').css('color','');
+$("#btnNR").prop('checked',false);
+}
+
+function bin_to_hex(str) {
+var hex_array = [{ key: 0, val: "0000" }, { key: 1, val: "0001" }, { key: 2, val: "0010" }, { key: 3, val: "0011" }, { key: 4, val: "0100" }, { key: 5, val: "0101" }, { key: 6, val: "0110" }, { key: 7, val: "0111" },
+{ key: 8, val: "1000" }, { key: 9, val: "1001" }, { key: 'a', val: "1010" }, { key: 'b', val: "1011" }, { key: 'c', val: "1100" }, { key: 'd', val: "1101" }, { key: 'e', val: "1110" }, { key: 'f', val: "1111" }];
+var value ='';
+var list = [];
+if (str.length % 4 !== 0) {
+var a = "0000";
+var b = a.substring(0, 4 - str.length % 4);
+str = b.concat(str);
+}
+while (str.length > 4) {
+list.push(str.substring(0, 4));
+str = str.substring(4);
+}
+list.push(str);
+for (var i = 0; i < list.length; i++) {
+for (var j = 0; j < hex_array.length; j++) {
+if (list[i] == hex_array[j].val) {
+value = value.concat(hex_array[j].key);
+break;
+}}}
+value = value.replace(/\b(0+)/gi, "");
+if (value =='') value = '0';
+return value;
+}
+
+function hex_to_bin(str) {
+var hex_array = [{ key: 0, val: "0000" }, { key: 1, val: "0001" }, { key: 2, val: "0010" }, { key: 3, val: "0011" }, { key: 4, val: "0100" }, { key: 5, val: "0101" }, { key: 6, val: "0110" }, { key: 7, val: "0111" },
+{ key: 8, val: "1000" }, { key: 9, val: "1001" }, { key: 'a', val: "1010" }, { key: 'b', val: "1011" }, { key: 'c', val: "1100" }, { key: 'd', val: "1101" }, { key: 'e', val: "1110" }, { key: 'f', val: "1111" }];
+str = str.toLowerCase();
+var value = "";
+for (var i = 0; i < str.length; i++) {
+for (var j = 0; j < hex_array.length; j++) {
+if (str.charAt(i) == hex_array[j].key) {
+value = value.concat(hex_array[j].val);
+break;
+}}}
+return value;
+}
+
+function err(n, e, r) {
+suspend = 1, $("#t").html("! Error Executing Request !").show().css('background', 'red'),setTimeout(function() { suspend = 0, $("#t").hide("") }, 3000), console.log(n), console.log(e), console.log(r)
+}
+
+function extractXML(n, e) {
+try {
+return e.split("</" + n + ">")[0].split("<" + n + ">")[1]
+} catch (n) {
+return n.message
+}}
+
+function refresh(val,val2,val3,nroption){
+suspend = 1, $("#t").html("! Executing The Request !").show().css('background', 'rgb(219, 120, 7)'),$.ajax({type: "GET",dataType: "text",async: !0,success: function(data) {
+var datas = data.split('name="csrf_token" content="');
+var token = datas[datas.length-1].split('"')[0];
+setTimeout(function(){
+$.ajax({type:"POST", async: true, url:'/api/net/net-mode', headers:{'__RequestVerificationToken':token}, contentType: 'application/xml',
+data:'<request><NetworkMode>'+val+'</NetworkMode><NetworkBand>'+val2+'</NetworkBand><LTEBand>'+val3+'</LTEBand><networkOption>' + nroption + '</networkOption></request>',success: function(suspend) {clearband();$("#showBand").hide(),suspend = 1, $("#t").html("! Request Done !").show().css('background', 'green'),setTimeout(function() { suspend = 0, $("#t").hide("") }, 3000)},error: err})}, 2e3)}})}
+
+function setBands() {
+if ($("#WB1").is(':checked')) {
+refresh('02', '400000', '7FFFFFFFFFFFFFFF');
+suspend = 1, $("#t").html("! Activating ( 2100-B1 ) 3G !").show().css('background', 'rgb(219, 120, 7)');return;}
+if ($("#WB2").is(':checked')) {
+refresh('02', '800000', '7FFFFFFFFFFFFFFF');
+suspend = 1, $("#t").html("! Activating ( 1900-B2 ) 3G !").show().css('background', 'rgb(219, 120, 7)');return;}
+if ($("#WB4").is(':checked')) {
+refresh('02', '2000000', '7FFFFFFFFFFFFFFF');
+suspend = 1, $("#t").html("! Activating ( 1700-B4 ) 3G !").show().css('background', 'rgb(219, 120, 7)');return;}
+if ($("#WB5").is(':checked')) {
+refresh('02', '4000000', '7FFFFFFFFFFFFFFF');
+suspend = 1, $("#t").html("! Activating ( 850-B5 ) 3G !").show().css('background', 'rgb(219, 120, 7)');return;}
+if ($("#WB6").is(':checked')) {
+refresh('02', '8000000', '7FFFFFFFFFFFFFFF');
+suspend = 1, $("#t").html("! Activating ( 800-B6 ) 3G !").show().css('background', 'rgb(219, 120, 7)');return;}
+if ($("#WB8").is(':checked')) {
+refresh('02', '2000000000000', '7FFFFFFFFFFFFFFF');
+suspend = 1, $("#t").html("! Activating ( 900-B8 ) 3G !").show().css('background', 'rgb(219, 120, 7)');return;}
+if ($("#WB9").is(':checked')) {
+refresh('02', '4000000000000', '7FFFFFFFFFFFFFFF');
+suspend = 1, $("#t").html("! Activating ( 1700-B9 ) 3G !").show().css('background', 'rgb(219, 120, 7)');return;}
+if ($("#WB19").is(':checked')) {
+refresh('02', '1000000000000000', '7FFFFFFFFFFFFFFF');
+suspend = 1, $("#t").html("! Activating ( 800-B19 ) 3G !").show().css('background', 'rgb(219, 120, 7)');return;}
+
+var val = 0;
+var lbm = 0;
+if ($("#B1").is(':checked')) {val = val + 1; lbm += b1;}
+if ($("#B2").is(':checked')) {val = val + 2; lbm += b2;}
+if ($("#B3").is(':checked')) {val = val + 4; lbm += b3;}
+if ($("#B4").is(':checked')) {val = val + 8; lbm += b4;}
+if ($("#B5").is(':checked')) {val = val + 10; lbm += b5;}
+if ($("#B8").is(':checked')) {val = val + 80; lbm += b8;}
+if ($("#B11").is(':checked')) {val = val + 400; lbm += b11;}
+if ($("#B12").is(':checked')) {val = val + 800; lbm += b12;}
+if ($("#B13").is(':checked')) {val = val + 1000; lbm += b13;}
+if ($("#B14").is(':checked')) {val = val + 2000; lbm += b14;}
+if ($("#B17").is(':checked')) {val = val + 10000; lbm += b17;}
+if ($("#B18").is(':checked')) {val = val + 20000; lbm += b18;}
+if ($("#B19").is(':checked')) {val = val + 40000; lbm += b19;}
+if ($("#B20").is(':checked')) {val = val + 80000; lbm += b20;}
+if ($("#B21").is(':checked')) {val = val + 100000; lbm += b21;}
+if ($("#B24").is(':checked')) {val = val + 800000; lbm += b24;}
+if ($("#B25").is(':checked')) {val = val + 1000000; lbm += b25;}
+if ($("#B26").is(':checked')) {val = val + 2000000; lbm += b26;}
+if ($("#B28").is(':checked')) {val = val + 8000000; lbm += b28;}
+if ($("#B29").is(':checked')) {val = val + 10000000; lbm += b29;}
+if ($("#B30").is(':checked')) {val = val + 20000000; lbm += b30;}
+if ($("#B31").is(':checked')) {val = val + 40000000; lbm += b31;}
+if ($("#B32").is(':checked')) {val = val + 80000000; lbm += b32;}
+if ($("#B34").is(':checked')) {val = val + 200000000; lbm += b34;}
+if ($("#B37").is(':checked')) {val = val + 1000000000; lbm += b37;}
+if ($("#B38").is(':checked')) {val = val + 2000000000; lbm += b38;}
+if ($("#B39").is(':checked')) {val = val + 4000000000; lbm += b39;}
+if ($("#B40").is(':checked')) {val = val + 8000000000; lbm += b40;}
+if ($("#B41").is(':checked')) {val = val + 10000000000; lbm += b41;}
+if ($("#B42").is(':checked')) {val = val + 20000000000; lbm += b42;}
+if ($("#B43").is(':checked')) {val = val + 40000000000; lbm += b43;}
+if ($("#B44").is(':checked')) {val = val + 80000000000; lbm += b44;}
+if ($("#B46").is(':checked')) {val = val + 200000000000; lbm += b46;}
+if ($("#B47").is(':checked')) {val = val + 400000000000; lbm += b47;}
+if ($("#B48").is(':checked')) {val = val + 800000000000; lbm += b48;}
+if ($("#B49").is(':checked')) {val = val + 1000000000000; lbm += b49;}
+if ($("#B50").is(':checked')) {val = val + 2000000000000; lbm += b50;}
+if ($("#B51").is(':checked')) {val = val + 4000000000000; lbm += b51;}
+if ($("#B52").is(':checked')) {val = val + 8000000000000; lbm += b52;}
+if ($("#B53").is(':checked')) {val = val + 10000000000000; lbm += b53;}
+if ($("#B7").is(':checked')) {hex_value = '' + val; val = parseInt(hex_value, 16); val = val + 64; lbm += b7; hex_value = val.toString(16);} else {hex_value = '' + val;}
+
+if ($("#btnNSA").is(':checked')) {nroption = '0';}
+if ($("#btnSA").is(':checked')) {nroption = '1';}
+if ($("#btnSANSA").is(':checked')) {nroption = '2';}
+
+if (hex_value == 0 + nroption) {
+suspend = 1, $("#t").html("! Please Choose Any Frequency Before Done !").show().css('background', 'red'),setTimeout(function() { suspend = 0, $("#t").hide("") }, 3000);}
+
+if (hex_value == 0) {
+if ($("#btnNSA").is(':checked')) {
+refresh('00', '00000000', '7FFFFFFFFFFFFFFF', '0');
+suspend = 1, $("#t").html("! Activating The 5G NSA !").show().css('background', 'rgb(219, 120, 7)');}
+if ($("#btnSA").is(':checked')) {
+refresh('00', '00000000', '7FFFFFFFFFFFFFFF', '1');
+suspend = 1, $("#t").html("! Activating The 5G SA !").show().css('background', 'rgb(219, 120, 7)');}
+if ($("#btnSANSA").is(':checked')) {
+refresh('00', '00000000', '7FFFFFFFFFFFFFFF', '2');
+suspend = 1, $("#t").html("! Activating The 5G SA+NSA !").show().css('background', 'rgb(219, 120, 7)');}return;}
+
+if ($("#btnNR").is(':checked')) {
+refresh('00', '00000000', '' + hex_value, '' + nroption);
+suspend = 1, $("#t").html("! Activating The 4G is Being With The 5G !").show().css('background', 'rgb(219, 120, 7)');
+} else {
+refresh('03', '3FFFFFFF', '' + hex_value);
+suspend = 1, $("#t").html("! Activating The 4G is Being !").show().css('background', 'rgb(219, 120, 7)');}
+}
+
+function bandselect(n) {
+if (mainband = mainband && null, 0 == arguments.length) {
+if (null == (e = (e = prompt("Please Input LTE Bands Number, FDD Bands : (B1-2100) (B3-1800) (B5-850) (B7-2600) (B8-900) (B28-700) }     TDD Bands : (B38-2600) (B40-2300) (B41-2500) (B42-3500) }. Separated By + Char (example 1+3 or 3+28).", band)) && e.toLowerCase()) || "" === e) return
+} else var e = arguments[0];
+var n = e.split("+"),
+t = 0;
+if ("AUTO" === e.toUpperCase()) t = "7FFFFFFFFFFFFFFF";
+else {
+for (var r = 0; r < n.length; r++) {
+if (-1 != n[r].toLowerCase().indexOf("m") && (n[r] = n[r].replace("m", ""), mainband = n[r]),"AUTO" === n[r].toUpperCase()) {t = "7FFFFFFFFFFFFFFF";break}
+t += Math.pow(2, parseInt(n[r]) - 1)
+}
+t = t.toString(16)
+}
+if (mainband) return _2ndrun = n, void bandselect(String(mainband));
+suspend = 1, $("#t").html("! Please Wait !").show().css('background', 'rgb(219, 120, 7)'),$.ajax({type: "GET",dataType: "text",async: !0,success: function(n) {
+var n = n.split('name="csrf_token" content="'),
+e = n[n.length - 1].split('"')[0],
+r = "00";
+setTimeout(function() {
+$.ajax({type: "POST",async: !0,url: "/api/net/net-mode",headers: {__RequestVerificationToken: e},contentType: "application/xml",
+data: "<request><NetworkMode>" + r + "</NetworkMode><NetworkBand>3FFFFFFF</NetworkBand><LTEBand>" + t + "</LTEBand></request>",
+success: function(n) {$("#showBand").hide(),suspend = 1, $("#t").html("! Request Done !").show().css('background', 'green'),setTimeout(function() { suspend = 0, $("#t").hide("") }, 3000), _2ndrun , window.setTimeout(function() {bandselect(_2ndrun.join("+")), _2ndrun = !1}, 2e3)},error: err})}, 2e3)}})}
+
+function _auto(n) {
+refresh('00', '3FFFFFFF', '7FFFFFFFFFFFFFFF');
+suspend = 1, $("#t").html("! Auto Mode is Being Enabled !").show().css('background', 'rgb(219, 120, 7)');}
+
+function _2G(n) {
+refresh('01', '3FFFFFFF', '7FFFFFFFFFFFFFFF');
+suspend = 1, $("#t").html("! Enable 2G Automatic mode !").show().css('background', 'rgb(219, 120, 7)');}
+
+function _3G(n) {
+refresh('02', '3FFFFFFF', '7FFFFFFFFFFFFFFF');
+suspend = 1, $("#t").html("! Enable 3G Automatic mode !").show().css('background', 'rgb(219, 120, 7)');}
+
+function _4G(n) {
+refresh('03', '3FFFFFFF', '7FFFFFFFFFFFFFFF');
+suspend = 1, $("#t").html("! Enable 4G Automatic mode !").show().css('background', 'rgb(219, 120, 7)');}
+
+function _5G(n) {
+refresh('00', '00000000', '7FFFFFFFFFFFFFFF');
+suspend = 1, $("#t").html("! Enable 5G Automatic mode !").show().css('background', 'rgb(219, 120, 7)');}
+
+function _showB(n) {
+$("#showBand").show();
+$("#aa").hide();
+$("#bb").show();
+}
+
+function _showBclose(n) {
+$("#showBand").hide();
+$("#aa").show();
+$("#bb").hide();
+}
+
+function _options(n) {
+$("#optin").show();
+$("#a1").hide();
+$("#a2").show();
+}
+
+function _optionsclose(n) {
+$("#optin").hide();
+$("#a1").show();
+$("#a2").hide();
+}
+
+function rest(val1){
+suspend = 1, $("#t").html("! Restart Router !").show().css('background', 'rgb(219, 120, 7)'),$.ajax({type: "GET",dataType: "text",async: !0,
+success: function(data) {
+var datas = data.split('name="csrf_token" content="');
+var token = datas[datas.length-1].split('"')[0];
+setTimeout(function(){
+$.ajax({type:"POST", async: true, url:'/api/device/control', headers:{'__RequestVerificationToken':token}, contentType: 'application/xml',
+data:'<request><Control>'+val1+'</Control></request>',success: function(suspend) { $("#showBand").hide(),suspend = 1, $("#t").html("! Restart Done !").show().css('background', 'green'),setTimeout(function() { suspend = 0, $("#t").hide("") }, 3000)},error: function(suspend) { $("#t").html("! Restart Error !").show().css('background', 'red'),setTimeout(function() { suspend = 0, $("#t").hide("") }, 3000);}})}, 2e3)}})}
+
+function power(val1){
+suspend = 1, $("#t").html("! ShutDown Router !").show().css('background', 'rgb(219, 120, 7)'),$.ajax({type: "GET",dataType: "text",async: !0,
+success: function(data) {
+var datas = data.split('name="csrf_token" content="');
+var token = datas[datas.length-1].split('"')[0];
+setTimeout(function(){
+$.ajax({type:"POST", async: true, url:'/api/device/control', headers:{'__RequestVerificationToken':token}, contentType: 'application/xml',
+data:'<request><Control>'+val1+'</Control></request>',success: function(suspend) { $("#showBand").hide(),suspend = 1, $("#t").html("! ShutDown Done !").show().css('background', 'green'),setTimeout(function() { suspend = 0, $("#t").hide("") }, 3000)},error: function(suspend) { $("#t").html("! ShutDown Error !").show().css('background', 'red'),setTimeout(function() { suspend = 0, $("#t").hide("") }, 3000);}})}, 2e3)}})}
+
+function restor(val1){
+suspend = 1, $("#t").html("! Restore Factory settings !").show().css('background', 'rgb(219, 120, 7)'),$.ajax({type: "GET",dataType: "text",async: !0,
+success: function(data) {
+var datas = data.split('name="csrf_token" content="');
+var token = datas[datas.length-1].split('"')[0];
+setTimeout(function(){
+$.ajax({type:"POST", async: true, url:'/api/device/control', headers:{'__RequestVerificationToken':token}, contentType: 'application/xml',
+data:'<request><Control>'+val1+'</Control></request>',success: function(suspend) { $("#showBand").hide(),suspend = 1, $("#t").html("! Restore Done !").show().css('background', 'green'),setTimeout(function() { suspend = 0, $("#t").hide("") }, 3000)},error: function(suspend) { $("#t").html("! Restore Error !").show().css('background', 'red'),setTimeout(function() { suspend = 0, $("#t").hide("") }, 3000);}})}, 2e3)}})}
+
+function changeip() {
+suspend = 1, $("#t").html("! Executing The Request !").show().css('background', 'rgb(219, 120, 7)'),setTimeout(function() { suspend = 0, $("#t").html("! The IP Address Is Changing !").show().css('background', 'green'),setTimeout(function() { suspend = 0, $("#t").hide("") }, 3000) }, 5000),$.ajax({type: "GET",dataType: "text",async: !0,url:'/api/net/plmn-list',success: function(data) {while (xml.indexOf('<Network>') > -1) {sp = xml.slice(xml.indexOf('<Network>'), xml.indexOf('</Network>') + 1);}}})}
+
+function restart() {rest(1);}
+function restore() {restor(2);}
+function poweroff() {power(4);}
+
+function SaveAnte(){
+suspend = 1, $("#t").html("! Executing The Request !").show().css('background', 'rgb(219, 120, 7)'),$.ajax({type: "GET",dataType: "text",async: !0,
+success: function(data) {
+var datas = data.split('name="csrf_token" content="');
+var token = datas[datas.length-1].split('"')[0];
+setTimeout(function(){
+$.ajax({type:"POST", async: true, url:'/api/device/antenna_set_type', headers:{'__RequestVerificationToken':token}, contentType: 'application/xml',data:'<request><antennasettype>' + $("#antenna").val() + '</antennasettype></request>',success: function(suspend) { $("#showBand").hide(),suspend = 1, $("#t").html("! Antenna has been switched !").show().css('background', 'green'),setTimeout(function() { suspend = 0,ReadAntenna(), $("#t").hide("") }, 3000)},error: function(suspend) { $("#t").html("! Antenna Not Switched !").show().css('background', 'red'),setTimeout(function() { suspend = 0, $("#t").hide("") }, 3000);}})}, 2e3)}})}
+
+function SaveAnteo(){
+suspend = 1, $("#t").html("! Executing The Request !").show().css('background', 'rgb(219, 120, 7)'),$.ajax({type: "GET",dataType: "text",async: !0,
+success: function(data) {
+var datas = data.split('name="csrf_token" content="');
+var token = datas[datas.length-1].split('"')[0];
+setTimeout(function(){
+$.ajax({type:"POST", async: true, url:'/api/device/antenna_settings', headers:{'__RequestVerificationToken':token}, contentType: 'application/xml',data:'<request><antenna_type>' + $("#antennao").val() + '</antenna_type></request>',success: function(suspend) { $("#showBand").hide(),suspend = 1, $("#t").html("! Antenna has been switched !").show().css('background', 'green'),setTimeout(function() { suspend = 0,ReadAntenna(), $("#t").hide("") }, 3000)},error: function(suspend) { $("#t").html("! Antenna Not Switched !").show().css('background', 'red'),setTimeout(function() { suspend = 0, $("#t").hide("") }, 3000);}})}, 2e3)}})}
+
+function ReadAntenna() {{{{{
+$.ajax({dataType: "text",type: "GET",async: !0,url: '/api/device/antenna_type', success:function(data) {
+var xml = data,xmlDoc = $.parseXML(xml),$xml = $(xmlDoc);
+var antennastat1;
+antennastat1 = $xml.find('antenna1type').text();
+if (antennastat1 == '0') {
+antennastat1 = 'Internal'; $("#antenna1").css('background','#0d10b4');
+} else if (antennastat1 == '1') {
+antennastat1 = 'External'; $("#antenna1").css('background','#b4710d');
+} else {
+antennastat1 = 'Unknown'; $("#antenna2").css('background','#e00700');
+}
+$("#antenna1").html(antennastat1);
+
+var antennastat2;
+antennastat2 = $xml.find('antenna2type').text();
+if (antennastat2 == '0') {
+antennastat2 = 'Internal'; $("#antenna2").css('background','#0d10b4');
+} else if (antennastat2 == '1') {
+antennastat2 = 'External'; $("#antenna2").css('background','#b4710d');
+} else {
+antennastat2 = 'Unknown'; $("#antenna2").css('background','#e00700');
+}
+$("#antenna2").html(antennastat2);
+}})
+}
+$.ajax({dataType: "text",type: "GET",async: !0,url: '/api/device/antenna_status', success:function(data) {
+var xml = data,xmlDoc = $.parseXML(xml),$xml = $(xmlDoc);
+var antennasta1;
+antennasta1 = $xml.find('antenna1_status').text();
+if (antennasta1 == '0') {
+antennasta1 = 'Internal'; $("#antenna1").css('background','#0d10b4');
+} else if (antennasta1 == '1') {
+antennasta1 = 'External'; $("#antenna1").css('background','#b4710d');
+} else {
+antennasta1 = 'Unknown'; $("#antenna1").css('background','#e00700');
+}
+$("#antenna1").html(antennasta1);
+
+var antennasta2;
+antennasta2 = $xml.find('antenna2_status').text();
+if (antennasta2 == '0') {
+antennasta2 = 'Internal'; $("#antenna2").css('background','#0d10b4');
+} else if (antennasta2 == '1') {
+antennasta2 = 'External'; $("#antenna2").css('background','#b4710d');
+} else {
+antennasta2 = 'Unknown'; $("#antenna2").css('background','#e00700');
+}
+$("#antenna2").html(antennasta2);
+}})
+}
+$.ajax({dataType: "text",type: "GET",async: !0,url: '/api/device/antenna_set_type', success:function(data) {
+var xml = data,xmlDoc = $.parseXML(xml),$xml = $(xmlDoc);
+var antcolor = $xml.find('antennasettype').text();
+if (antcolor == '0') { $("#antcolor").css('background','#11dada');
+} else if (antcolor == '1') { $("#antcolor").css('background','#b4710d');
+} else if (antcolor == '2') { $("#antcolor").css('background','#0d10b4');
+} else if (antcolor == '3') { $("#antcolor").css('background','#f80099');
+}
+if ($xml.find('antennasettype').text() == "") {
+$("#antenna,.SaveAntenna").css('display','none');
+} else {
+$("#antenna,.SaveAntenna").css('display','');
+$("#infAntena").css('display','none');
+$("#antenna").val($xml.find('antennasettype').text());
+}
+}})
+}
+$.ajax({dataType: "text",type: "GET",async: !0,url: '/api/device/antenna_settings', success:function(data) {
+var xml = data,xmlDoc = $.parseXML(xml),$xml = $(xmlDoc);
+var antclr = $xml.find('antenna_type').text();
+if (antclr == '3') { $("#antcolor").css('background','#11dada');
+} else if (antclr == '1') { $("#antcolor").css('background','#b4710d');
+} else if (antclr == '0') { $("#antcolor").css('background','#0d10b4');
+} else if (antclr == '2') { $("#antcolor").css('background','#f80099');
+}
+if ($xml.find('antenna_type').text() == "") {
+$("#antennao,.SaveAntennao").css('display','none');
+} else {
+$("#antennao,.SaveAntennao").css('display','');
+$("#infAntena").css('display','none');
+$("#antennao").val($xml.find('antenna_type').text());
+}
+}})
+}
+}
+
+function getantennastatus() {{{{
+$.ajax({dataType: "text",type: "GET",async: !0,url: '/api/device/antenna_type', success:function(data) {
+var xml = data,xmlDoc = $.parseXML(xml),$xml = $(xmlDoc);
+var ant1 = $xml.find('antenna1type').text();
+var ant2 = $xml.find('antenna2type').text();
+if (ant1 == '0' && ant2 == '0') {
+$("#antennastatus").html('Internal').css('background','#0d10b4');
+} else if (ant1 == '1' && ant2 == '1') {
+$("#antennastatus").html('External').css('background','#b4710d');
+} else if (ant1 == '0' && ant2 == '1') {
+$("#antennastatus").html('Mixed').css('background','#f80099');
+} else if (ant1 == '1' && ant2 == '0') {
+$("#antennastatus").html('Mixed').css('background','#f80099');
+}
+if (xml == '') {
+$("#antennastatus").html('Unknown').css('background','#e00700');
+return;
+}
+}})
+}
+$.ajax({dataType: "text",type: "GET",async: !0,url: '/api/device/antenna_set_type', success:function(data) {
+var xml = data,xmlDoc = $.parseXML(xml),$xml = $(xmlDoc);
+var ant1t = $xml.find('antennasettype').text();
+if (ant1t == '0') {
+$("#antennastatus").html('Auto').css('background','#11dada');
+} else if (ant1t == '1') {
+$("#antennastatus").html('External').css('background','#b4710d');
+} else if (ant1t == '2') {
+$("#antennastatus").html('Internal').css('background','#0d10b4');
+} else if (ant1t == '3') {
+$("#antennastatus").html('Mixed').css('background','#f80099');
+}
+if (xml == '') {
+$("#antennastatus").html('Unknown').css('background','#e00700');
+return;
+}
+}})
+}
+$.ajax({dataType: "text",type: "GET",async: !0,url: '/api/device/antenna_status', success:function(data) {
+var xml = data,xmlDoc = $.parseXML(xml),$xml = $(xmlDoc);
+var ant1i = $xml.find('antenna1_status').text();
+var ant2i = $xml.find('antenna2_status').text();
+if (ant1i == '0' && ant2i == '0') {
+$("#antennastatus").html('Internal').css('background','#0d10b4');
+} else if (ant1i == '1' && ant2i == '1') {
+$("#antennastatus").html('External').css('background','#b4710d');
+} else if (ant1i == '0' && ant2i == '1') {
+$("#antennastatus").html('Mixed').css('background','#f80099');
+} else if (ant1i == '1' && ant2i == '0') {
+$("#antennastatus").html('Mixed').css('background','#f80099');
+}
+if (xml == '') {
+$("#antennastatus").html('Unknown').css('background','#e00700');
+return;
+}
+}})
+}
+}
+
+function ftb() {
+$(".color_background_blue").css("background", "#456"),
+$(".headcontainer").hide(),
+$("body").prepend('<style>
+.ff {
+border: 2px solid #bbb;
+border-radius: 10px;
+padding: 5px;
+line-height: 2em;
+margin: 1px;
+}
+#t {
+color: rgb(0, 0, 0);
+background: rgb(219, 120, 7);
+margin: 10px;
+padding: 10px;
+border-radius: 10px;
+display: none;
+text-align: center;
+font-weight: bolder;
+font-size: 20px;
+}
+body{
+background: rgb(160, 160, 160);
+font-weight: bolder;
+border-radius: 10px;
+}
+table, td{
+border: 2px solid rgba(8, 8, 8, 0.37);
+border-collapse: collapse;
+text-align: center;
+vertical-align: middle;
+color: inherit;
+font-weight: bold;
+border-spacing: 0;
+}
+.color{
+text-align: center;
+color: red;
+font-weight: bold;
+font-size: 11px;
+}
+.colora{
+text-align: center;
+color: lightgreen;
+font-weight: bold;
+font-size: 11px;
+}
+.colorb{
+text-align: center;
+color: yellow;
+font-weight: bold;
+font-size: 11px;
+}
+.colorc{
+text-align: center;
+color: rgb(0, 255, 255);
+font-weight: bold;
+font-size: 11px;
+}
+.label{
+background: #357EC7;
+color: black;
+font-weight: bold;
+text-align: center;
+}
+.LabelSignal{
+text-align: center;
+font-weight: bold;
+padding: 3px 3px 3px 3px;
+background: #888;
+}
+.fixreading{
+width: 100%;
+text-align: center;
+font-weight: bold;
+transition: width .3s linear;
+border-radius: 10px;
+box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.39), 0 2px 10px 0 rgba(0, 0, 0, 0.418)!important;
+}
+.fixid{
+text-align: center;
+font-weight: bold;
+color: rgb(0, 0, 0);
+}
+.signal-icon{
+background:#b7d9fe;
+border-radius: 10px;
+outline: none;
+margin-right: 0px;
+display: inline-block;
+}
+.btn3 {
+display: inline-block;
+*display: inline;
+zoom: 1;
+cursor: pointer;
+border: 2px solid black;
+overflow: visible;
+font-weight: bold;
+font-size: 11.333px;
+text-decoration: none;
+white-space: nowrap;
+background: green;
+text-align:center;
+border-radius:10px;
+color:white;
+font-weight:bolder;
+padding: 1px 0px 1px 0px;
+}
+.btn3:hover{
+background: #96aba7;
+color: blue;
+}
+.btn3:active {
+background: #00a023;
+color: #911a11;
+position: relative;
+top: 1px;
+text-shadow: none;
+-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, .3) inset;
+-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .3) inset;
+box-shadow: 0 1px 1px rgba(0, 0, 0, .3) inset;
+}
+.dropdown0{
+background: radial-gradient(at 57% 50%, rgb(56, 57, 61) 0, rgb(49, 55, 90) 40%, rgb(0, 1, 2) 100%);
+}
+.dropdown{
+background: radial-gradient(at 57% 50%, rgb(53, 58, 71) 0, rgb(32, 34, 46) 40%, rgb(3, 14, 26) 100%);
+}
+.eya1{
+background: #01a70f;
+color: #000000;
+border-radius: 6px;
+font-weight: bold;
+font-size: 13px;
+padding: 1px 1px 1px 1px;
+}
+.eya2{
+background: #d88200;
+color: #000000;
+border-radius: 6px;
+font-weight: bold;
+font-size: 13px;
+padding: 1px 1px 1px 1px;
+}
+.eya3{
+background: #b30f03;
+color: #d1cece;
+border-radius: 6px;
+font-weight: bold;
+font-size: 13px;
+padding: 1px 1px 1px 1px;
+}
+.eya4{
+background: #940f82;
+color: #00ff00;
+border-radius: 6px;
+font-weight: bold;
+font-size: 13px;
+padding: 1px 1px 1px 1px;
+}
+.eya5{
+background: yellow;
+color: black;
+border-radius: 6px;
+font-weight: bold;
+font-size: 15px;
+padding: 1px 1px 1px 1px;
+}
+.b-radio{
+display: inline-block;
+border: 2px solid rgb(192, 192, 192);
+width: 16px;
+height: 16px;
+border-radius: 99px;
+vertical-align: middle;
+margin-right: 5px;
+position: relative;
+}
+.g-radio{
+display: inline-block;
+border: 2px solid rgb(192, 192, 192);
+width: 16px;
+height: 16px;
+border-radius: 99px;
+vertical-align: middle;
+margin-right: 5px;
+margin-top: -3px;
+position: relative;
+}
+.nf{
+text-align: center;
+color: yellow;
+}
+</style>
+<div class="ff">
+<div class="ff">
+<table class="dropdown0" style="width:100%;text-align:center;font-weight:bold">
+<th>
+<span style="vertical-align: middle">
+<span style="margin-top:2px;vertical-align: middle">
+<div id="signal1" class="signal-icon" style="width:10px;height:16px"></div>
+<div id="signal2" class="signal-icon" style="width:10px;height:21px"></div>
+<div id="signal3" class="signal-icon" style="width:10px;height:26px"></div>
+<div id="signal4" class="signal-icon" style="width:10px;height:31px"></div>
+<div id="signal5" class="signal-icon" style="width:10px;height:36px"></div>
+</span>&nbsp;
+<span style="text-align: center;font-size: 11px;font-weight:bold;color: red" id="mode">2G/3G/4G</span>&nbsp;<span class="colorc bband" id="bandB"></span>
+</th>
+<th>
+<span class="nf" id="brand">Service</span>&nbsp;<span class="nu colorc" id="numer">Number Service</span>
+<div>
+<span class="nf nu" id="name">Country</span>
+<div style="text-align:center;vertical-align: middle">
+<span class="color">&nbsp;NetMode :&nbsp;</span><span class="colorc" id="LNetMode"></span>
+<span class="color">&nbsp;NetBand :&nbsp;</span><span class="colorb" id="LNetworkBand"></span>
+<span class="color">&nbsp;LTEBand :&nbsp;</span><span class="colora" id="LLTEBand"></span>
+<span class="color">&nbsp;Mode :&nbsp;</span><span class="colorb" id="moden"></span>
+<span class="color neo">&nbsp;NetOption :&nbsp;</span><span class="colora" id="NetOption"></span>
+</th>
+<th>
+&nbsp;
+<span class="e5" style="vertical-align: middle">
+<span style="text-align: center;font-size: 11px;font-weight:bold;color: red" id="leftband">5G</span>&nbsp;<span class="colorc bnr" id="bandNR"></span>
+&nbsp;
+<span style="margin-top:2px;vertical-align: middle">
+<div id="nrsignal5" class="signal-icon" style="width:10px;height:36px"></div>
+<div id="nrsignal4" class="signal-icon" style="width:10px;height:31px"></div>
+<div id="nrsignal3" class="signal-icon" style="width:10px;height:26px"></div>
+<div id="nrsignal2" class="signal-icon" style="width:10px;height:21px"></div>
+<div id="nrsignal1" class="signal-icon" style="width:10px;height:16px"></div>
+</span>
+</th>
+</table>
+<table style="width:100%;text-align:center;font-weight:bold">
+<td class="dropdown0" style="width:25%" Rowspan="2">
+<button style="font-weight:bolder;background: rgb(18, 68, 60);color:white;padding: 5px;border-radius:10px;" id="aa" onclick="_showB()">Select BAND</button>
+<button style="font-weight:bolder;background: rgb(18, 68, 60);color:white;padding: 5px;border-radius:10px;display:none" id="bb" onclick="_showBclose()">Select BAND</button>
+&emsp;
+<button style="font-weight:bolder;background: rgb(18, 68, 60);color:white;padding: 5px;border-radius:10px;" onclick="bandselect()">Combine BAND</button>
+&emsp;
+<button style="font-weight:bolder;background: rgb(20, 161, 91);color:white;padding: 5px;border-radius:10px;" onclick="speed()">Speed Test</button>
+&emsp;
+<button style="font-weight:bolder;background: rgb(150, 59, 7);color:white;padding: 5px;border-radius:10px;" id="a1" onclick="_options();">Options</button>
+<button style="font-weight:bolder;background: rgb(150, 59, 7);color:white;padding: 5px;border-radius:10px;display:none" id="a2" onclick="_optionsclose();">Options</button>
+<script>
+function speed() {
+window.open("https://www.speedtest.net/");
+}
+</script>
+<div>
+<span style="font-weight:bolder;color:rgb(255, 240, 36)">Huawei Manager 2023 for Browser</span>
+</div>
+</td>
+<td style="width:15%" class="label" colspan="2">RSSI</td>
+<td style="width:8%" class="label pci">PCI</td>
+<td style="width:8%" class="label cell">CELL ID</td>
+<td style="width:8%" class="label enb">eNBID/Cell</td>
+<td style="width:8%" class="label">Mode</td>
+<td style="width:8%" class="label lac" id="tlac">TAC</td>
+<td style="width:8%;display:none" class="label bn3">Band</td>
+<td style="width:8%" class="label">Antenna</td>
+<tr>
+<td class="LabelSignal">
+<div class="fixreading rssib"><span id="rssi">0</span>
+<td class="LabelSignal">
+<div class="fixreading rssib"><span id="rssipercent">0</span>
+<td class="LabelSignal pci"><span id="pci">0</span>
+<td class="LabelSignal cell"><span id="cell_id">0</span>
+<td class="LabelSignal enb"><span id="enbid">0</span>
+<td class="LabelSignal mod"><span id="modee">0</span>
+<td class="LabelSignal lac"><span id="lac">0</span>
+<td class="LabelSignal bn3" style="display:none"><span id="band3">0</span>
+<td class="LabelSignal" id="antennastatus">-</span>
+</table>
+<table style="width:100%;text-align:center;font-weight:bold">
+<tr id="stat" style="font-size:15px;text-align:center;background:#911a11">
+<td style="width:100%;position: inherit;color:yellow">
+<span id="model" style="color:#d1cece;font-weight:bold">Model</span><span id="Software" style="color:#d1cece;font-weight:bold">Version</span><span id="WebUI" style="color:#d1cece;font-weight:bold">WebUI</span><span id="conn" style="color:#d1cece;font-weight:bold">Status</span><span id="bootTime" style="color:#d1cece;font-weight:bold">Router Runtime</span><span id="ipv4" style="color:#d1cece;font-weight:bold">IP Address</span><span id="wanipv4dns" style="color:#d1cece;font-weight:bold">DNS IPV4</span>
+</table>
+
+<table id="optin" style="width:100%;text-align:center;font-weight:bold;display:none">
+<td style="width:50%;font-size:big;background:#041b4b">
+<button style="font-weight:bolder;background-color: #00d10a;color:black;padding: 5px;border-radius:10px;" onclick="restart()">Restart Router</button>
+&nbsp;&nbsp;
+<button style="font-weight:bolder;background-color: #f31111;color:black;padding: 5px;border-radius:10px;" onclick="poweroff()">ShutDown Router</button>
+&nbsp;&nbsp;
+<button style="font-weight:bolder;background-color: #1496d3;color:black;padding: 5px;border-radius:10px;" onclick="changeip()">Refresh IP Address</button>
+&nbsp;&nbsp;
+<button style="font-weight:bolder;background-color: #f77070;color:black;padding: 5px;border-radius:10px;" onclick="restore()">Restore Default Settings</button>
+</td>
+<td style="width:50%;font-size:big;background:#887610" id="antcolor">
+<label class="label" style="padding: 3px 3px 3px 3px;text-align:center;border: 2px solid rgb(255, 255, 255);font-size:12;text-align:center">First Entry</label>&nbsp;
+<label class="label" style="padding: 3px 3px 3px 3px;background: #888;text-align:center;border: 2px solid rgb(255, 255, 255);font-size:12;text-align:center;color:white" id="antenna1">Unknown</label>
+&nbsp;&nbsp;&nbsp;
+<label class="label" style="padding: 3px 3px 3px 3px;text-align:center;border: 2px solid rgb(255, 255, 255);font-size:12;text-align:center">Second Entry</label>&nbsp;
+<label class="label" style="padding: 3px 3px 3px 3px;background: #888;text-align:center;border: 2px solid rgb(255, 255, 255);font-size:12;text-align:center;color:white" id="antenna2">Unknown</label>
+&nbsp;&nbsp;
+<input type="button" class="btn" onclick="ReadAntenna()" value="Show Data" style="font-weight:bolder;border-radius: 10px;height:26px;width:82px">
+&nbsp;&nbsp;
+<label style="text-align:center" id="antcolor">
+<select style="display:none;text-align:center;font-weight:bold" id="antenna">
+<option value ="0">Automatic</option>
+<option value ="2">Internal</option>
+<option value ="1">External</option>
+<option value ="3">Mixed</option>
+</select>
+<select style="display:none;text-align:center;font-weight:bold" id="antennao">
+<option value ="3">Automatic</option>
+<option value ="0">Internal</option>
+<option value ="1">External</option>
+<option value ="2">Mixed</option>
+</select>
+</label>
+&nbsp;&nbsp;
+<label>
+<input type="button" class="btn SaveAntenna" onclick="SaveAnte()" value="Save" style="font-weight:bolder;border-radius: 10px;display:none;height:26px;width:36px">
+<input type="button" class="btn SaveAntennao" onclick="SaveAnteo()" value="Save" style="font-weight:bolder;border-radius: 10px;display:none;height:26px;width:36px">
+</label>
+</td>
+</table>
+
+<table id="showBand" style="width:100%;text-align:center;font-weight:bold;display:none">
+<td style="width:10%;font-size:big;background:#0bcfd6">
+<span style="font-size:big;font-size: 15px;font-weight:bolder;color: black"><b><b>AUTO</b></b></span></td>
+<td class="dropdown0">
+<input class="btn3" onclick="_auto()" style="font-weight:bolder;font-size:13px" type="button" value="&emsp;AUTO&emsp;">
+<input class="btn3 e5" onclick="_5G()" style="font-weight:bolder;font-size:13px" type="button" value="&emsp;5G&emsp;">
+<input class="btn3 sh4G" onclick="_4G()" style="font-weight:bolder;font-size:13px" type="button" value="&emsp;4G&emsp;">
+<input class="btn3 sh3G" onclick="_3G()" style="font-weight:bolder;font-size:13px" type="button" value="&emsp;3G&emsp;">
+<input class="btn3 sh2G" onclick="_2G()" style="font-weight:bolder;font-size:13px" type="button" value="&emsp;2G&emsp;">
+<input style="font-weight:bolder;font-size:13px;padding: 7px;border-radius:10px;background:red" class="btn3" onclick="setBands()" type="button" value="&emsp;Accept Band&emsp;">
+</td>
+<tr>
+<td class="sh3G" style="width:10%;font-size:big;background:#01a70f">
+<span style="font-size:big;font-size: 15px;font-weight:bolder;color: #000000"><b><b>3G</b></b></span></td>
+<td class="dropdown sh3G">
+<label id="sWB6">&nbsp;
+<input type="radio" name="3" class="b-radio" id="WB6"><span class="eya1" id="w06">&nbsp;800 - B6&nbsp;</label>
+<label id="sWB19">&nbsp;
+<input type="radio" name="3" class="b-radio" id="WB19"><span class="eya1" id="w019">&nbsp;800 - B19&nbsp;</label>
+<label id="sWB5">&nbsp;
+<input type="radio" name="3" class="b-radio" id="WB5"><span class="eya1" id="w05">&nbsp;850 - B5&nbsp;</label>
+<label id="sWB8">&nbsp;
+<input type="radio" name="3" class="b-radio" id="WB8"><span class="eya1" id="w08">&nbsp;900 - B8&nbsp;</label>
+<label id="sWB4">&nbsp;
+<input type="radio" name="3" class="b-radio" id="WB4"><span class="eya1" id="w04">&nbsp;1700 - B4&nbsp;</label>
+<label id="sWB9">&nbsp;
+<input type="radio" name="3" class="b-radio" id="WB9"><span class="eya1" id="w09">&nbsp;1700 - B9&nbsp;</label>
+<label id="sWB2">&nbsp;
+<input type="radio" name="3" class="b-radio" id="WB2"><span class="eya1" id="w02">&nbsp;1900 - B2&nbsp;</label>
+<label id="sWB1">&nbsp;
+<input type="radio" name="3" class="b-radio" id="WB1"><span class="eya1" id="w01">&nbsp;2100 - B1&nbsp;</label>
+</td>
+<tr>
+<td class="sh4G" style="width:10%;font-size:big;background:#d88200">
+<span style="font-size:big;font-size: 15px;font-weight:bolder;color: black"><b><b>4G-FDD</b></b></span></td>
+<td class="dropdown sh4G">
+<label id="sB12">&nbsp;
+<input type="checkbox" class="b-radio" id="B12"><span class="eya2" id="012">&nbsp;700 - B12&nbsp;</label>
+<label id="sB13">&nbsp;
+<input type="checkbox" class="b-radio" id="B13"><span class="eya2" id="013">&nbsp;700 - B13&nbsp;</label>
+<label id="sB17">&nbsp;
+<input type="checkbox" class="b-radio" id="B17"><span class="eya2" id="017">&nbsp;700 - B17&nbsp;</label>
+<label id="sB28">&nbsp;
+<input type="checkbox" class="b-radio" id="B28"><span class="eya2" id="028">&nbsp;700 - B28&nbsp;</label>
+<label id="sB29">&nbsp;
+<input type="checkbox" class="b-radio" id="B29"><span class="eya2" id="029">&nbsp;700 - B29&nbsp;</label>
+<label id="sB20">&nbsp;
+<input type="checkbox" class="b-radio" id="B20"><span class="eya2" id="020">&nbsp;800 - B20&nbsp;</label>
+<label id="sB27">&nbsp;
+<input type="checkbox" class="b-radio" id="B27"><span class="eya2" id="027">&nbsp;800 - B27&nbsp;</label>
+<label id="sB5">&nbsp;
+<input type="checkbox" class="b-radio" id="B5"><span class="eya2" id="05">&nbsp;850 - B5&nbsp;</label>
+<label id="sB18">&nbsp;
+<input type="checkbox" class="b-radio" id="B18"><span class="eya2" id="018">&nbsp;850 - B18&nbsp;</label>
+<label id="sB19">&nbsp;
+<input type="checkbox" class="b-radio" id="B19"><span class="eya2" id="019">&nbsp;850 - B19&nbsp;</label>
+<label id="sB26">&nbsp;
+<input type="checkbox" class="b-radio" id="B26"><span class="eya2" id="026">&nbsp;850 - B26&nbsp;</label>
+<label id="sB8">&nbsp;
+<input type="checkbox" class="b-radio" id="B8"><span class="eya2" id="08">&nbsp;900 - B8&nbsp;</label>
+<label id="sB32">&nbsp;
+<input type="checkbox" class="b-radio" id="B32"><span class="eya2" id="032">&nbsp;1500 - B32&nbsp;</label>
+<label id="sB4">&nbsp;
+<input type="checkbox" class="b-radio" id="B4"><span class="eya2" id="04">&nbsp;1700 - B4&nbsp;</label>
+<label id="sB3">&nbsp;
+<input type="checkbox" class="b-radio" id="B3"><span class="eya2" id="03">&nbsp;1800 - B3&nbsp;</label>
+<label id="sB2">&nbsp;
+<input type="checkbox" class="b-radio" id="B2"><span class="eya2" id="02">&nbsp;1900 - B2&nbsp;</label>
+<label id="sB25">&nbsp;
+<input type="checkbox" class="b-radio" id="B25"><span class="eya2" id="025">&nbsp;1900 - B25&nbsp;</label>
+<label id="sB1">&nbsp;
+<input type="checkbox" class="b-radio" id="B1"><span class="eya2" id="01">&nbsp;2100 - B1&nbsp;</label>
+<label id="sB30">&nbsp;
+<input type="checkbox" class="b-radio" id="B30"><span class="eya2" id="030">&nbsp;2300 - B30&nbsp;</label>
+<label id="sB7">&nbsp;
+<input type="checkbox" class="b-radio" id="B7"><span class="eya2" id="07">&nbsp;2600 - B7&nbsp;</label>
+</td>
+<tr>
+<td class="sh4G" style="width:10%;font-size:big;background:#b30f03">
+<span style="font-size:big;font-size: 15px;font-weight:bolder;color: #d1cece"><b><b>4G-TDD</b></b></span></td>
+<td class="dropdown sh4G">
+<label id="sB39">&nbsp;
+<input type="checkbox" class="b-radio" id="B39"><span class="eya3" id="039">&nbsp;1900 - B39&nbsp;</label>
+<label id="sB34">&nbsp;
+<input type="checkbox" class="b-radio" id="B34"><span class="eya3" id="034">&nbsp;2000 - B34&nbsp;</label>
+<label id="sB40">&nbsp;
+<input type="checkbox" class="b-radio" id="B40"><span class="eya3" id="040">&nbsp;2300 - B40&nbsp;</label>
+<label id="sB41">&nbsp;
+<input type="checkbox" class="b-radio" id="B41"><span class="eya3" id="041">&nbsp;2500 - B41&nbsp;</label>
+<label id="sB38">&nbsp;
+<input type="checkbox" class="b-radio" id="B38"><span class="eya3" id="038">&nbsp;2600 - B38&nbsp;</label>
+<label id="sB42">&nbsp;
+<input type="checkbox" class="b-radio" id="B42"><span class="eya3" id="042">&nbsp;3500 - B42&nbsp;</label>
+<label id="sB43">&nbsp;
+<input type="checkbox" class="b-radio" id="B43"><span class="eya3" id="043">&nbsp;3700 - B43&nbsp;</label>
+</td>
+<tr>
+<td class="e5" style="width:10%;font-size:big;background:#940f82">
+<span style="font-size:big;font-size: 15px;font-weight:bolder;color: #00ff00"><b><b>5G</b></b></span></td>
+<td class="dropdown e5">
+<label>&nbsp;
+<input type="radio" id="btnNSA" name="2" class="g-radio"><span class="eya4" id="nsacol">&nbsp;NSA&nbsp;</label>
+<label>&nbsp;
+<input type="radio" id="btnSA" name="2" class="g-radio"><span class="eya4" id="sacol">&nbsp;SA&nbsp;</label>
+<label>&nbsp;
+<input type="radio" id="btnSANSA" name="2" class="g-radio"><span class="eya4" id="sansacol">&nbsp;SA+NSA&nbsp;</label>
+<label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="checkbox" style="margin-top: -2px;" class="b-radio" id="btnNR"><span class="eya5">&nbsp;Enabled 4G + 5G&nbsp;</label>
+</table>
+</td>
+<table class="allow" style="width:100%;text-align:center;font-weight:bold">
+<tr style="font-size:15px;text-align:center;background:#911a11">
+<td style="position: inherit;color:yellow" colspan="3">
+<span id="bando" style="color:#d1cece;font-weight:bold"></span>
+<tr style="font-size:15px;text-align:center;background:#911a11">
+<td style="position: inherit;color:yellow" colspan="3">
+<span id="allowed" style="color:#d1cece;font-weight:bold"></span>
+</table>
+</div>
+<div style="display:block;overflow: auto;">
+<div id="t"></div>
+</div>
+
+<div class="ff 2G">
+<table class="e3" style="width:100%;text-align:center;font-weight:bold;display:none">
+<td style="width:25%" class="label" colspan="2">3G-RSCP</td>
+<td style="width:25%" class="label" colspan="2">3G-ECIO</td>
+<td style="width:25%" class="label tx" colspan="2">3G-TXPower</td>
+<td style="width:25%" class="label arfc3g">3G-EARFCN</td>
+<tr>
+<td class="LabelSignal">
+<div class="fixreading rscpb"><span id="rscp">0</span>
+<td class="LabelSignal">
+<div class="fixreading rscpb"><span id="rscppercent">0</span>
+<td class="LabelSignal">
+<div class="fixreading eciob"><span id="ecio">0</span>
+<td class="LabelSignal">
+<div class="fixreading eciob"><span id="eciopercent">0</span>
+<td class="LabelSignal tx">
+<div class="fixreading tx3b"><span id="txpow3g">0</span>
+<td class="LabelSignal arfc3g" colspan="2">
+<div class="fixreading" style="background:#008013"><span id="earf3g">-</span>
+</table>
+
+<table class="e4" style="width:100%;text-align:center;font-weight:bold">
+<td style="width:15%" class="label" colspan="2">4G-RSRP</td>
+<td style="width:15%" class="label" colspan="2">4G-RSRQ</td>
+<td style="width:15%" class="label" colspan="2">4G-SINR</td>
+<td style="width:30%" class="label tx">4G-TXPower</td>
+<td style="width:15%;display:none" class="label 4ulf">4G-Frequency</td>
+<tr>
+<td class="LabelSignal">
+<div class="fixreading rsrpb"><span id="rsrp">0</span>
+<td class="LabelSignal">
+<div class="fixreading rsrpb"><span id="rsrppercent">0</span>
+<td class="LabelSignal">
+<div class="fixreading rsrqb"><span id="rsrq">0</span>
+<td class="LabelSignal">
+<div class="fixreading rsrqb"><span id="rsrqpercent">0</span>
+<td class="LabelSignal">
+<div class="fixreading sinrb"><span id="sinr">0</span>
+<td class="LabelSignal">
+<div class="fixreading sinrb"><span id="sinrpercent">0</span>
+<td class="LabelSignal tx">
+<div class="fixreading tx4b"><span id="txpow4g">0</span>
+<td style="display:none" class="LabelSignal 4ulf">
+<div class="fixreading" style="background:rgb(0, 255, 106)"><span class="fixid" id="ludfreq">-</span>
+</table>
+
+<table class="mcstbs4g" style="width: 100%;display:none">
+<td class="label" colspan="3">4G-MCS</td>
+<td class="label" colspan="3">4G-TBS</td>
+<td style="display:none" class="label dlmcs5g" colspan="3">5G-MCS</td>
+<td class="label" colspan="2">QAM</td>
+<tr>
+<td style="width:9%" class="LabelSignal">
+<div class="fixreading" id="dlmcs0reading"><span class="fixid" id="dlmcs0">0</span>
+<td style="width:9%" class="LabelSignal">
+<div class="fixreading" id="dlmcs1reading"><span class="fixid" id="dlmcs1">0</span>
+<td style="width:9%" class="LabelSignal">
+<div class="fixreading" id="ulmcsreading"><span class="fixid" id="ulmcs">0</span>
+<td style="width:9%" class="LabelSignal">
+<div class="fixreading" id="dltbs0reading"><span class="fixid" id="dltbs0">0</span>
+<td style="width:9%" class="LabelSignal">
+<div class="fixreading" id="dltbs1reading"><span class="fixid" id="dltbs1">0</span>
+<td style="width:9%" class="LabelSignal">
+<div class="fixreading" id="ultbsreading"><span class="fixid" id="ultbs">0</span>
+<td style="width:9%;display:none" class="LabelSignal dlmcs5g">
+<div class="fixreading" id="nr0dlmcsreading"><span class="fixid" id="nr0dlmcs">0</span>
+<td style="width:9%;display:none" class="LabelSignal dlmcs5g">
+<div class="fixreading" id="nr1dlmcsreading"><span class="fixid" id="nr1dlmcs">0</span>
+<td style="width:9%;display:none" class="LabelSignal dlmcs5g">
+<div class="fixreading" id="nrulmcsreading"><span class="fixid" id="nrulmcs">0</span>
+<td style="width:9%" class="LabelSignal">
+<div class="fixreading" id="QAM0"><span class="fixid">-</span>
+<td style="width:9%" class="LabelSignal">
+<div class="fixreading" id="QAM1"><span class="fixid">-</span>
+</table>
+
+<table style="width: 100%">
+<td style="width:15%;display:none" class="label ulf">Frequency</td>
+<td style="width:15%" class="label dlul">4G-DL/UL BW</td>
+<td style="width:15%" class="label arfc4g">4G-EARFCN</td>
+<td style="width:15%" class="label nrdlul">5G-DL/UL BW</td>
+<td style="width:15%" class="label nrarfc">5G-EARFCN</td>
+<td style="width:15%" class="label cqi01" colspan="2">CQI</td>
+
+<tr>
+<td style="display:none" class="LabelSignal ulf">
+<div class="fixreading" style="background:rgb(0, 255, 106)"><span class="fixid" id="dufrequency">-</span>
+<td class="LabelSignal dlul">
+<div class="fixreading" id="dlulbandreading"><span class="fixid" id="dlbandwidth">0</span>/<span class="fixid" id="ulbandwidth">0</span>
+<td class="LabelSignal arfc4g">
+<div class="fixreading" id="arfcnreading"><span class="fixid" id="earf4g">-</span>
+<td class="LabelSignal nrdlul">
+<div class="fixreading" id="nrdlulbandreading"><span class="fixid" id="nrdlbw">0</span>/<span class="fixid" id="nrulbw">0</span>
+<td class="LabelSignal nrarfc">
+<div class="fixreading" id="nrarfcnreading"><span class="fixid" id="nrearf">-</span>
+<td class="LabelSignal cqi01">
+<div class="fixreading" id="0cqi"><span class="fixid">-</span>
+<td class="LabelSignal cqi01">
+<div class="fixreading" id="1cqi"><span class="fixid">-</span>
+
+</table>
+
+<table class="e5" style="width:100%;text-align:center;font-weight:bold;display:none">
+<td style="width:15%"class="label" colspan="2">5G-RSRP</td>
+<td style="width:15%" class="label" colspan="2">5G-RSRQ</td>
+<td style="width:15%" class="label" colspan="2">5G-SINR</td>
+<td style="width:30%" class="label nrtx">5G-TXPower</td>
+<td style="width:15%;display:none" class="label 5ulf">5G-Frequency</td>
+<tr>
+<td class="LabelSignal">
+<div class="fixreading nrrsrpb"><span id="nrrsrp">0</span>
+<td class="LabelSignal">
+<div class="fixreading nrrsrpb"><span id="nrrsrppercent">0</span>
+<td class="LabelSignal">
+<div class="fixreading nrrsrqb"><span id="nrrsrq">0</span>
+<td class="LabelSignal">
+<div class="fixreading nrrsrqb"><span id="nrrsrqpercent">0</span>
+<td class="LabelSignal">
+<div class="fixreading nrsinrb"><span id="nrsinr">0</span>
+<td class="LabelSignal">
+<div class="fixreading nrsinrb"><span id="nrsinrpercent">0</span>
+<td class="LabelSignal nrtx">
+<div class="fixreading nrtxp"><span id="nrtxpow">0</span>
+<td style="display:none" class="LabelSignal 5ulf">
+<div class="fixreading"style="background:rgb(0, 255, 106)"><span class="fixid" id="nrudfreq">-</span>
+</table>
+</div>
+</div>
+')}
