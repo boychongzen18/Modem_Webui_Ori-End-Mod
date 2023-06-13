@@ -11,6 +11,8 @@ Link Kode
 
 https://raw.githubusercontent.com/boychongzen18/Modem_Webui_Ori-End-Mod/main/kode_orbit_star2.txt
 
+https://raw.githubusercontent.com/boychongzen18/Modem_Webui_Ori-End-Mod/main/HM_Browser.txt
+
 
 tekan keyboard  >> ctrl+shift+o
 
